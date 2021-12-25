@@ -1,0 +1,8 @@
+browser->server: HTTP POST https://studies.cs.helsinki.fi/exampleapp/new_note_spa
+server-->browser: HTML-code 201 {content: "Merry Christmas!", date: "2021-12-25T18:37:37.430Z"}
+
+note over browser:
+browser displays note on the web page
+browser posts data to server
+server responds with the new note
+end note

@@ -1,0 +1,28 @@
+browser->server: HTTP POST https://studies.cs.helsinki.fi/exampleapp/new_note
+server-->browser: HTML-code 302 [payload: {note: "Merry Christmas!"}, redirect-to: /exampleapp/notes]
+
+note over browser:
+browser posts data to server
+server responds with a redirect message
+end note
+
+browser->server: HTTP GET https://studies.cs.helsinki.fi/exampleapp/notes
+server-->browser: HTML-code 200
+browser->server: HTTP GET https://studies.cs.helsinki.fi/exampleapp/main.css
+server-->browser: main.css
+browser->server: HTTP GET https://studies.cs.helsinki.fi/exampleapp/main.js
+server-->browser: main.js
+
+note over browser:
+browser requests the HTML
+browser executes js-code
+requests JSON data from server 
+end note
+
+browser->server: HTTP GET https://studies.cs.helsinki.fi/exampleapp/data.json
+server-->browser: [{content: "Merry Christmas!", date: "2021-12-25T16:06:29.373Z", ...]
+
+note over browser:
+browser executes the event handler
+that renders notes to display
+end note
