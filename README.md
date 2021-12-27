@@ -14,8 +14,6 @@ The folder structure.
 
 ``` text
 ├── part0
-│   ├── 0.4-new-note.txt
-│   ├── 
 ├── part1
 │   ├── courseinfo
 │   ├── unicafe
