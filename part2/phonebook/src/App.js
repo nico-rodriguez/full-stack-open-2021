@@ -1,59 +1,31 @@
-import axios from 'axios';
 import { useEffect, useState } from 'react';
 import Filter from './components/Filter';
 import PersonForm from './components/PersonForm';
 import Persons from './components/Persons';
+import personService from './services/persons';
 
 const App = () => {
   const [persons, setPersons] = useState([]);
-  const [newName, setNewName] = useState('');
-  const [newPhone, setNewPhone] = useState('');
   const [query, setQuery] = useState('');
-  const [filteredPersons, setFilteredPersons] = useState([]);
 
   useEffect(() => {
-    axios
-      .get('http://localhost:3001/persons')
-      .then(({ data }) => {
-        setPersons(data);
-        setFilteredPersons(data);
-      });
+    personService
+      .getAll()
+      .then(persons => {
+        setPersons(persons);
+      })
   }, []);
 
-  const addName = (event) => {
-    event.preventDefault();
-
-    if (persons.find(({ name }) => name === newName)) {
-      alert(`${newName} is already in the phonebook`);
-    } else {
-      const newPerson = {
-        name: newName,
-        phone: newPhone,
-        id: persons.length + 1
-      };
-      setPersons(persons.concat(newPerson));
-      if (newName.toLocaleLowerCase().includes(query.toLocaleLowerCase())) {
-        setFilteredPersons(filteredPersons.concat(newPerson));
-      }
-      setNewName('');
-      setNewPhone('');
-    }
-  }
-
-  const handleQuery = e => {
-    const newQuery = e.target.value;
-    setQuery(newQuery);
-    setFilteredPersons(persons.filter(({ name }) => name.toLowerCase().includes(newQuery.toLowerCase())));
-  }
+  const matched = (name, query) => name.toLowerCase().includes(query.toLowerCase());
 
   return (
     <div>
       <h2>Phonebook</h2>
-      <Filter query={query} handleQuery={handleQuery}/>
+      <Filter query={query} handleQuery={e => setQuery(e.target.value)}/>
       <h3>Add a new</h3>
-      <PersonForm addName={addName} newName={newName} newPhone={newPhone} setNewName={setNewName} setNewPhone={setNewPhone}/>
+      <PersonForm persons={persons} setPersons={setPersons}/>
       <h3>Numbers</h3>
-      <Persons persons={filteredPersons}/>
+      <Persons filteredPersons={persons.filter(({ name}) => matched(name, query))} persons={persons} setPersons={setPersons}/>
     </div>
   )
 }
