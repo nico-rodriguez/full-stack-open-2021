@@ -2,7 +2,7 @@ import { useState } from "react";
 import personService from "../services/persons";
 
 
-const PersonForm = ({ persons, setPersons }) => {
+const PersonForm = ({ displayNotification, persons, setPersons }) => {
   const [newName, setNewName] = useState('');
   const [newNumber, setNewNumber] = useState('');
 
@@ -23,7 +23,9 @@ const PersonForm = ({ persons, setPersons }) => {
             setPersons(persons.map(person => person.name === newPerson.name ? newPerson : person));
             setNewName('');
             setNewNumber('');
+            displayNotification(`Updated ${newName}'s number`, 'success', 5000);
           })
+          .catch(err => displayNotification(`Could not remove ${newName} from the server\n${err}`, 'error', 5000));
       }
     } else {
       personService
@@ -32,7 +34,9 @@ const PersonForm = ({ persons, setPersons }) => {
           setPersons(persons.concat(person));
           setNewName('');
           setNewNumber('');
+          displayNotification(`Added ${newName} to the server`, 'success', 5000);
         })
+        .catch(err => displayNotification(`Could not add ${newName} to the server\n${err}`, 'error', 5000));
     }
   }
   
