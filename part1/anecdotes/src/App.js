@@ -31,14 +31,13 @@ const App = () => {
   const [votes, setVotes] = useState(anecdotes.map(() => 0));
 
   const handleVote = () => {
-    const newVotes = votes.slice();
+    const newVotes = [...votes];
     newVotes[selected] += 1;
     setVotes(newVotes);
   }
 
   const mostVoted = (anecdotes, votes) => {
     const sortedEntries = [...votes.entries()].sort(([_a, a], [_b, b]) => b - a);
-    debugger;
     const indexOfMax = sortedEntries[0][0];
 
     return anecdotes[indexOfMax];
