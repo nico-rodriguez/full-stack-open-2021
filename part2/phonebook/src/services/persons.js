@@ -1,25 +1,25 @@
 import axios from 'axios';
 
-const baseURL = 'http://localhost:3001';
+const baseURL = '/api/persons';
 
 const getAll = () =>
   axios
-    .get(`${baseURL}/persons`)
+    .get(`${baseURL}`)
     .then(({ data }) => data);
 
 const create = (person) =>
   axios
-    .post(`${baseURL}/persons`, person)
+    .post(`${baseURL}`, person)
     .then(({ data }) => data);
 
 const put = (id, person) =>
   axios
-    .put(`${baseURL}/persons/${id}`, person)
+    .put(`${baseURL}/${id}`, person)
     .then(({data}) => data);
 
 const remove = (id) =>
   axios
-    .delete(`${baseURL}/persons/${id}`);
+    .delete(`${baseURL}/${id}`);
 
 
 const personService = { getAll, create, put, remove };

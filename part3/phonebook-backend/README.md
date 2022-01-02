@@ -24,4 +24,10 @@ This pushes only the subdirectory to the heroku remote.
 
 ## Usage
 
+### Locally
+
 Run the server with `npm start`. Alternatively, run it on development mode, which enables hot reload, with `npm run dev`.
+
+### Remotely
+
+View Heroku logs with `heroku logs -t`.
