@@ -31,43 +31,18 @@ app.get("/api/persons/:id", (req, res, next) => {
 app.post("/api/persons", (req, res, next) => {
   const newPerson = req.body;
 
-  if (!newPerson.name) {
-    return res.status(400).json({
-      error: "name is missing",
-    });
-  }
-
-  if (!newPerson.number) {
-    return res.status(400).json({
-      error: "number is missing",
-    });
-  }
-
   Person.findOne({ name: newPerson.name })
-    .then((person) => {
-      if (person) {
-        return res.status(400).json({
-          error: "name must be unique",
-        });
-      }
-
-      const newPersonEntry = new Person({ ...newPerson });
-      newPersonEntry.save().then((result) => {
-        res.json(result);
-      });
-    })
-    .catch((err) => next(err));
+    const newPersonEntry = new Person({ ...newPerson });
+    newPersonEntry.save()
+      .then((result) => res.json(result))
+      .catch((err) => next(err));
 });
 
 app.put("/api/persons/:id", (req, res, next) => {
-  if (!req.body.number) {
-    return res.status(400).end();
-  }
-
   Person.findByIdAndUpdate(
     req.params.id,
     { number: req.body.number },
-    { new: true }
+    { new: true, runValidators: true }
   )
     .then((person) => res.json(person))
     .catch((err) => next(err));
@@ -75,10 +50,7 @@ app.put("/api/persons/:id", (req, res, next) => {
 
 app.delete("/api/persons/:id", (req, res, next) => {
   Person.findByIdAndDelete(req.params.id)
-    .then((result) => {
-      console.log(result);
-      res.status(204).end();
-    })
+    .then((result) => res.status(204).end())
     .catch((err) => next(err));
 });
 
@@ -98,11 +70,13 @@ const unknownEndpoint = (req, res) => {
 
 app.use(unknownEndpoint);
 
-const errorHandler = (error, req, res, next) => {
-  console.error(error.message);
+const errorHandler = (err, req, res, next) => {
+  console.error(err.message);
 
-  if (error.name === "CastError") {
-    return response.status(400).send({ error: "malformed id" });
+  if (err.name === "CastError") {
+    return res.status(400).send({ error: "malformed id" });
+  } else if (err.name === "ValidationError") {
+    return res.status(400).json({ error: err.message })
   }
 
   next(error);
