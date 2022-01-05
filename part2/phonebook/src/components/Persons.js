@@ -1,7 +1,7 @@
 import personService from "../services/persons";
 
 
-const Persons = ({ displayNotification, filteredPersons, persons, setPersons, setErrMsg, setNotificationType }) => {
+const Persons = ({ displayNotification, filteredPersons, persons, setPersons }) => {
   const handleDelete = (id, deleteName) => {
     if (window.confirm(`Delete ${deleteName}?`)) {
       personService
