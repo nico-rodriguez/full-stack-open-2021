@@ -1,7 +1,7 @@
 GET http://localhost:3001/api/persons
 
 ###
-GET http://localhost:3001/api/persons/4
+GET http://localhost:3001/api/persons/61d503121a9056115a7f86bb
 
 ###
 POST http://localhost:3001/api/persons/
@@ -38,7 +38,16 @@ Content-Type: application/json
 }
 
 ###
-DELETE http://localhost:3001/api/persons/4
+PUT http://localhost:3001/api/persons/61d51722220a21b9c49cc637
+Content-Type: application/json
+
+{
+  "name": "Sherlock Holmes",
+  "number": "111-222-3333"
+}
+
+###
+DELETE http://localhost:3001/api/persons/61d503121a9056115a7f86bb
 
 ###
 GET http://localhost:3001/info

@@ -1,13 +1,13 @@
-const cors = require('cors');
+const Person = require("./models/person");
+const cors = require("cors");
 const express = require("express");
 const morgan = require("morgan");
 const app = express();
 const port = process.env.PORT || 3001;
 
-app.use(express.static('build'));
+app.use(express.static("build"));
 app.use(cors());
 app.use(express.json());
-
 
 morgan.token("body", (req, res) => {
   if (req.method === "POST") return JSON.stringify(req.body);
@@ -16,45 +16,19 @@ app.use(
   morgan(":method :url :status :res[content-length] - :response-time ms :body")
 );
 
-let phonebook = [
-  {
-    id: 1,
-    name: "Arto Hellas",
-    number: "040-123456",
-  },
-  {
-    id: 2,
-    name: "Ada Lovelace",
-    number: "39-44-5323523",
-  },
-  {
-    id: 3,
-    name: "Dan Abramov",
-    number: "12-43-234345",
-  },
-  {
-    id: 4,
-    name: "Mary Poppendieck",
-    number: "39-23-6423122",
-  },
-];
-
-const generateId = () => {
-  const range = 238476234872364823;
-  return Math.floor(Math.random() * range);
-};
-
-app.get("/api/persons", (req, res) => res.json(phonebook));
-
-app.get("/api/persons/:id", (req, res) => {
-  const person = phonebook.find(({ id }) => id === Number(req.params.id));
-
-  if (!person) return res.status(404).end();
-
-  res.json(person);
+app.get("/api/persons", (req, res, next) => {
+  Person.find({})
+    .then((persons) => res.json(persons))
+    .catch((err) => next(err));
 });
 
-app.post("/api/persons", (req, res) => {
+app.get("/api/persons/:id", (req, res, next) => {
+  Person.findById(req.params.id)
+    .then((person) => res.json(person))
+    .catch((err) => next(err));
+});
+
+app.post("/api/persons", (req, res, next) => {
   const newPerson = req.body;
 
   if (!newPerson.name) {
@@ -69,32 +43,71 @@ app.post("/api/persons", (req, res) => {
     });
   }
 
-  if (phonebook.find(({ name }) => name === newPerson.name)) {
-    return res.status(400).json({
-      error: "name must be unique",
-    });
-  }
+  Person.findOne({ name: newPerson.name })
+    .then((person) => {
+      if (person) {
+        return res.status(400).json({
+          error: "name must be unique",
+        });
+      }
 
-  newPerson.id = generateId();
-  phonebook = phonebook.concat(newPerson);
-  res.json(newPerson);
+      const newPersonEntry = new Person({ ...newPerson });
+      newPersonEntry.save().then((result) => {
+        res.json(result);
+      });
+    })
+    .catch((err) => next(err));
 });
 
-app.delete("/api/persons/:id", (req, res) => {
-  const newPhonebook = phonebook.filter(
-    ({ id }) => id !== Number(req.params.id)
-  );
+app.put("/api/persons/:id", (req, res, next) => {
+  if (!req.body.number) {
+    return res.status(400).end();
+  }
 
-  phonebook = newPhonebook;
-  res.status(204).end();
+  Person.findByIdAndUpdate(
+    req.params.id,
+    { number: req.body.number },
+    { new: true }
+  )
+    .then((person) => res.json(person))
+    .catch((err) => next(err));
+});
+
+app.delete("/api/persons/:id", (req, res, next) => {
+  Person.findByIdAndDelete(req.params.id)
+    .then((result) => {
+      console.log(result);
+      res.status(204).end();
+    })
+    .catch((err) => next(err));
 });
 
 app.get("/info", (req, res) =>
-  res.send(
-    `<p>Phonebook has info for ${
-      phonebook.length
-    } people</p><p>${new Date().toUTCString()}</p>`
-  )
+  Person.find({}).then((persons) => {
+    res.send(
+      `<p>Phonebook has info for ${
+        persons.length
+      } people</p><p>${new Date().toUTCString()}</p>`
+    );
+  })
 );
+
+const unknownEndpoint = (req, res) => {
+  res.status(404).send({ error: "unknown endpoin" });
+};
+
+app.use(unknownEndpoint);
+
+const errorHandler = (error, req, res, next) => {
+  console.error(error.message);
+
+  if (error.name === "CastError") {
+    return response.status(400).send({ error: "malformed id" });
+  }
+
+  next(error);
+};
+
+app.use(errorHandler);
 
 app.listen(port, () => console.log(`Listening on port ${port}!`));
