@@ -10,7 +10,7 @@ const Persons = ({ displayNotification, filteredPersons, persons, setPersons }) 
           setPersons(persons.filter(({ name }) => name !== deleteName));
           displayNotification(`Removed ${deleteName} from the server`, 'success', 5000);
         })
-        .catch(err => displayNotification(`Could not delete ${deleteName} from the server\n${err}`, 'error', 5000));
+        .catch(err => displayNotification(err.response.data.error, 'error', 5000));
     }
   }
 

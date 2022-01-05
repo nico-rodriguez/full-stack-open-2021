@@ -25,7 +25,7 @@ const PersonForm = ({ displayNotification, persons, setPersons }) => {
             setNewNumber('');
             displayNotification(`Updated ${newName}'s number`, 'success', 5000);
           })
-          .catch(err => displayNotification(`Could not remove ${newName} from the server\n${err}`, 'error', 5000));
+          .catch(err => displayNotification(err.response.data.error, 'error', 5000));
       }
     } else {
       personService
@@ -36,7 +36,7 @@ const PersonForm = ({ displayNotification, persons, setPersons }) => {
           setNewNumber('');
           displayNotification(`Added ${newName} to the server`, 'success', 5000);
         })
-        .catch(err => displayNotification(`Could not add ${newName} to the server\n${err}`, 'error', 5000));
+        .catch(err => displayNotification(err.response.data.error, 'error', 5000));
     }
   }
   
