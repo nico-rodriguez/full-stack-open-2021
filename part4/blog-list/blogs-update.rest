@@ -1,0 +1,30 @@
+PUT http://localhost:3001/api/blogs/61d8f7ec6b395aaf4364256a
+Content-Type: application/json
+
+{
+  "title": "(UPDATED)React patterns"
+}
+
+###
+PUT http://localhost:3001/api/blogs/61d8f7ec6b395aaf4364256a
+Content-Type: application/json
+
+{
+  "author": "(UPDATED)Michael Chan"
+}
+
+###
+PUT http://localhost:3001/api/blogs/61d8f7ec6b395aaf4364256a
+Content-Type: application/json
+
+{
+  "url": "(UPDATED)https://reactpatterns.com/"
+}
+
+###
+PUT http://localhost:3001/api/blogs/61d8f7ec6b395aaf4364256a
+Content-Type: application/json
+
+{
+  "likes": 7000
+}

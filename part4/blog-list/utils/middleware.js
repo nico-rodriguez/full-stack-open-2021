@@ -13,6 +13,7 @@ const requestLogger = (request, response, next) => {
 };
 
 const errorHandler = (err, req, res, next) => {
+  console.log('HERE!!!');
   logger.error(err.message);
 
   if (err.name === 'CastError') {
