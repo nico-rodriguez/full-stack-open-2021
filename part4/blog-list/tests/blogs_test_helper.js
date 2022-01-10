@@ -1,4 +1,4 @@
-const { Blog } = require('../models/blog');
+const Blog = require('../models/blog');
 
 const initialBlogs = [
   {
@@ -58,9 +58,9 @@ const blogsInDB = async () => {
   return blogs
     .map((blog) => blog.toJSON())
     .map(({
-      title, author, url, likes
+      title, author, url, likes, user
     }) => ({
-      title, author, url, likes
+      title, author, url, likes, user
     }));
 };
 
