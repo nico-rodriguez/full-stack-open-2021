@@ -2,8 +2,10 @@ const mongoose = require('mongoose');
 const supertest = require('supertest');
 const config = require('../utils/config');
 const app = require('../app');
-const helper = require('./blogs_test_helper');
+const blogsHelper = require('./blogs_test_helper');
+const usersHelper = require('./users_test_helper');
 const Blog = require('../models/blog');
+const User = require('../models/user');
 
 const api = supertest(app);
 
@@ -11,9 +13,46 @@ beforeAll(async () => {
   await mongoose.connect(config.MONGODB_URI);
 });
 
-beforeEach(async () => {
+beforeAll(async () => {
+  await User.deleteMany({});
+  await Promise.all(usersHelper.initialUsers.map(async ({ username, name, password }) => {
+    await api
+      .post('/api/users')
+      .send({ username, name, password })
+      .expect(201)
+      .expect('Content-Type', /application\/json/);
+  }));
+
   await Blog.deleteMany({});
-  await Promise.all(helper.initialBlogs.map((blog) => (new Blog(blog)).save()));
+  const tokens = [];
+  await Promise.all(usersHelper.initialUsers.map(({ username, password }) => api
+    .post('/api/login')
+    .send({ username, password })
+    .expect(200)
+    .expect('Content-Type', /application\/json/)
+    .then((response) => {
+      tokens.push(response.body.token);
+    })));
+  for (const blog of blogsHelper.initialBlogs) {
+    const randomToken = tokens[Math.floor(Math.random() * tokens.length)];
+    // post blog with the random user credentials
+    await api
+      .post('/api/blogs')
+      .set('Authorization', `Bearer ${randomToken}`)
+      .send(blog)
+      .expect(201)
+      .expect('Content-Type', /application\/json/);
+  }
+  // await Promise.all(blogsHelper.initialBlogs.map((blog) => {
+  //   const randomToken = tokens[Math.floor(Math.random() * tokens.length)];
+  //   // post blog with the random user credentials
+  //   return api
+  //     .post('/api/blogs')
+  //     .set('Authorization', `Bearer ${randomToken}`)
+  //     .send(blog)
+  //     .expect(201)
+  //     .expect('Content-Type', /application\/json/);
+  // }));
 });
 
 describe('retrieving blogs', () => {
@@ -27,7 +66,7 @@ describe('retrieving blogs', () => {
   test('all blogs are returned ', async () => {
     const response = await api.get('/api/blogs');
 
-    expect(response.body).toHaveLength(helper.initialBlogs.length);
+    expect(response.body).toHaveLength(blogsHelper.initialBlogs.length);
   });
 
   test('a specific blog title is among the returned ones', async () => {
@@ -42,7 +81,7 @@ describe('retrieving blogs', () => {
     const contents = response.body.map(({
       title, author, url, likes
     }) => ({
-      title, author, likes, url,
+      title, author, likes, url
     }));
 
     expect(contents).toContainEqual({
@@ -81,11 +120,9 @@ describe('adding blogs', () => {
   let user;
 
   beforeAll(async () => {
-    await api
-      .get('/api/users')
-      .then((response) => {
-        user = response.body[0].id;
-      });
+    await api.get('/api/users').then((response) => {
+      user = response.body.find(({ username }) => username === 'rambo').id;
+    });
 
     await api
       .post('/api/login')
@@ -107,7 +144,6 @@ describe('adding blogs', () => {
       url: 'http://blog.cleancoder.com/uncle-bob/2017/03/03/TDD-Harms-Architecture-2.html',
       likes: 100,
     };
-
     await api
       .post('/api/blogs')
       .set('Authorization', `Bearer ${token}`)
@@ -115,17 +151,19 @@ describe('adding blogs', () => {
       .expect(201)
       .expect('Content-Type', /application\/json/);
 
-    const newBlogs = await helper.blogsInDB();
-    expect(newBlogs).toHaveLength(helper.initialBlogs.length + 1);
+    const newBlogs = await blogsHelper.blogsInDB();
+    expect(newBlogs).toHaveLength(blogsHelper.initialBlogs.length + 1);
 
-    expect(newBlogs.map(JSON.stringify)).toContainEqual(JSON.stringify({ ...newBlog, user }));
+    expect(newBlogs.map(JSON.stringify)).toContainEqual(
+      JSON.stringify({ ...newBlog, user })
+    );
   });
 
   test('likes default to 0 when not specified', async () => {
     const newBlog = {
       title: 'TDD harms architecture 2',
       author: 'Robert C. Martin',
-      url: 'http://blog.cleancoder.com/uncle-bob/2017/03/03/TDD-Harms-Architecture-2.html'
+      url: 'http://blog.cleancoder.com/uncle-bob/2017/03/03/TDD-Harms-Architecture-2.html',
     };
 
     await api
@@ -135,7 +173,7 @@ describe('adding blogs', () => {
       .expect(201)
       .expect('Content-Type', /application\/json/);
 
-    const newBlogs = await helper.blogsInDB();
+    const newBlogs = await blogsHelper.blogsInDB();
     const newSavedBlog = newBlogs.pop();
 
     expect(newSavedBlog.likes).toBeDefined();
@@ -146,7 +184,7 @@ describe('adding blogs', () => {
     const newBlog = {
       author: 'Robert C. Martin',
       url: 'http://blog.cleancoder.com/uncle-bob/2017/03/03/TDD-Harms-Architecture-2.html',
-      likes: 100
+      likes: 100,
     };
 
     await api
@@ -162,7 +200,7 @@ describe('adding blogs', () => {
     const newBlog = {
       title: 'TDD harms architecture 2',
       author: 'Robert C. Martin',
-      likes: 100
+      likes: 100,
     };
 
     await api
@@ -189,7 +227,7 @@ describe('adding blogs', () => {
       .expect(201)
       .expect('Content-Type', /application\/json/);
 
-    const newBlogs = await helper.blogsInDB();
+    const newBlogs = await blogsHelper.blogsInDB();
     const lastBlog = newBlogs[newBlogs.length - 1];
 
     expect(lastBlog.user.toString()).toBe(user);

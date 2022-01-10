@@ -1,7 +1,7 @@
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable no-param-reassign */
 const mongoose = require('mongoose');
-const uniqueValidator = require('mongoose-unique-validator');
+// const uniqueValidator = require('mongoose-unique-validator');
 
 const userSchema = new mongoose.Schema({
   username: {
@@ -16,6 +16,8 @@ const userSchema = new mongoose.Schema({
   },
   name: {
     type: String,
+    required: true,
+    minlength: 3
   },
   blogs: [
     {
@@ -33,7 +35,7 @@ userSchema.set('toJSON', {
     delete returnedObject.passwordHash;
   },
 });
-userSchema.plugin(uniqueValidator);
+// userSchema.plugin(uniqueValidator);
 
 const User = mongoose.model('User', userSchema);
 

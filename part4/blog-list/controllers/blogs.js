@@ -19,11 +19,19 @@ blogsRouter.post('/', async (request, response, next) => {
     if (!decodedToken.id) {
       return response.status(401).json({ error: 'token missing or invalid' });
     }
+
     const user = await User.findById(decodedToken.id);
-    const blog = new Blog({ ...request.body, user: user._id });
-    const result = await blog.save();
-    await result.populate('user', { username: 1, name: 1, _id: 1 });
-    response.status(201).json(result);
+    const blogToSave = new Blog({
+      ...request.body,
+      user: user._id // assign the user id to the blog
+    });
+    const blog = await blogToSave.save();
+
+    // assign the blog to the user
+    user.blogs = user.blogs.concat(blog._id);
+    await user.save();
+    await blog.populate('user', { username: 1, name: 1, _id: 1 });
+    response.status(201).json(blog);
   } catch (error) {
     next(error);
   }

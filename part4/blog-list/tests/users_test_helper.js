@@ -1,26 +1,23 @@
 const bcrypt = require('bcrypt');
 const User = require('../models/user');
 
-const initialUsersWithoutPassword = [
+const initialUsers = [
   {
     username: 'rambo',
-    name: 'John Rambo'
+    name: 'John Rambo',
+    password: 'password1'
   },
   {
     username: 'boyd',
-    name: 'Malcolm Boyd'
+    name: 'Malcolm Boyd',
+    password: 'password2'
   },
   {
     username: 'dumas',
-    name: 'Alejandro Dumas'
-  }
+    name: 'Alejandro Dumas',
+    password: 'password3'
+  },
 ];
-
-const initialUsers = Promise.all(['password1', 'password2', 'password3']
-  .map((password) => bcrypt.hash(password, 10)))
-  .then((passwordHashes) => passwordHashes.map((passwordHash, index) => ({
-    ...initialUsersWithoutPassword[index], passwordHash
-  })));
 
 const nonExistingId = async () => {
   const saltRounds = 10;

@@ -1,4 +1,3 @@
-const bcrypt = require('bcrypt');
 const mongoose = require('mongoose');
 const supertest = require('supertest');
 const config = require('../utils/config');
@@ -14,11 +13,26 @@ beforeAll(async () => {
 
 beforeEach(async () => {
   await User.deleteMany({});
-  const initialUserList = await helper.initialUsers;
-  await Promise.all(initialUserList.map((user) => (new User(user)).save()));
+  await Promise.all(helper.initialUsers.map(async ({ username, name, password }) => {
+    await api
+      .post('/api/users')
+      .send({ username, name, password })
+      .expect(201)
+      .expect('Content-Type', /application\/json/);
+  }));
 });
 
 describe('user creation', () => {
+  test('should get all users', async () => {
+    await api
+      .get('/api/users')
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+      .then((response) => {
+        expect(response.body).toHaveLength(helper.initialUsers.length);
+      });
+  });
+
   test('should create a new user', async () => {
     const newUser = {
       username: 'awesomeUsername',
@@ -32,9 +46,8 @@ describe('user creation', () => {
       .expect(201)
       .expect('Content-Type', /application\/json/);
 
-    const initialUserList = await helper.initialUsers;
     const newUserList = await helper.usersInDB();
-    expect(newUserList).toHaveLength(initialUserList.length + 1);
+    expect(newUserList).toHaveLength(helper.initialUsers.length + 1);
     const lastSavedUser = newUserList.pop();
     expect(lastSavedUser.username).toBe(newUser.username);
     expect(lastSavedUser.name).toBe(newUser.name);
