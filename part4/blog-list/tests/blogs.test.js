@@ -15,27 +15,34 @@ beforeAll(async () => {
 
 beforeAll(async () => {
   await User.deleteMany({});
-  await Promise.all(usersHelper.initialUsers.map(async ({ username, name, password }) => {
-    await api
-      .post('/api/users')
-      .send({ username, name, password })
-      .expect(201)
-      .expect('Content-Type', /application\/json/);
-  }));
+  await Promise.all(
+    usersHelper.initialUsers.map(async ({ username, name, password }) => {
+      await api
+        .post('/api/users')
+        .send({ username, name, password })
+        .expect(201)
+        .expect('Content-Type', /application\/json/);
+    })
+  );
 
   await Blog.deleteMany({});
   const tokens = [];
-  await Promise.all(usersHelper.initialUsers.map(({ username, password }) => api
-    .post('/api/login')
-    .send({ username, password })
-    .expect(200)
-    .expect('Content-Type', /application\/json/)
-    .then((response) => {
-      tokens.push(response.body.token);
-    })));
+  await Promise.all(
+    usersHelper.initialUsers.map(({ username, password }) => api
+      .post('/api/login')
+      .send({ username, password })
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+      .then((response) => {
+        tokens.push(response.body.token);
+      }))
+  );
+
+  // eslint-disable-next-line no-restricted-syntax
   for (const blog of blogsHelper.initialBlogs) {
     const randomToken = tokens[Math.floor(Math.random() * tokens.length)];
     // post blog with the random user credentials
+    // eslint-disable-next-line no-await-in-loop
     await api
       .post('/api/blogs')
       .set('Authorization', `Bearer ${randomToken}`)
@@ -43,16 +50,6 @@ beforeAll(async () => {
       .expect(201)
       .expect('Content-Type', /application\/json/);
   }
-  // await Promise.all(blogsHelper.initialBlogs.map((blog) => {
-  //   const randomToken = tokens[Math.floor(Math.random() * tokens.length)];
-  //   // post blog with the random user credentials
-  //   return api
-  //     .post('/api/blogs')
-  //     .set('Authorization', `Bearer ${randomToken}`)
-  //     .send(blog)
-  //     .expect(201)
-  //     .expect('Content-Type', /application\/json/);
-  // }));
 });
 
 describe('retrieving blogs', () => {
@@ -81,7 +78,10 @@ describe('retrieving blogs', () => {
     const contents = response.body.map(({
       title, author, url, likes
     }) => ({
-      title, author, likes, url
+      title,
+      author,
+      likes,
+      url,
     }));
 
     expect(contents).toContainEqual({
@@ -128,7 +128,7 @@ describe('adding blogs', () => {
       .post('/api/login')
       .send({
         username: 'rambo',
-        password: 'password1'
+        password: 'password1',
       })
       .expect(200)
       .expect('Content-Type', /application\/json/)
@@ -231,6 +231,70 @@ describe('adding blogs', () => {
     const lastBlog = newBlogs[newBlogs.length - 1];
 
     expect(lastBlog.user.toString()).toBe(user);
+  });
+});
+
+describe('deleting blogs', () => {
+  let someBlog;
+  let blogUser;
+  let userToken;
+  let otherUser;
+  let otherUserToken;
+
+  beforeAll(async () => {
+    await api
+      .get('/api/blogs')
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+      .then((response) => {
+        [someBlog] = response.body;
+        blogUser = usersHelper.initialUsers.find(
+          ({ username }) => username === someBlog.user.username
+        );
+        otherUser = usersHelper.initialUsers.find(
+          ({ username }) => username !== someBlog.user.username
+        );
+      });
+    await api
+      .post('/api/login')
+      .send(blogUser)
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+      .then((response) => {
+        userToken = response.body.token;
+      });
+    await api
+      .post('/api/login')
+      .send(otherUser)
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+      .then((response) => {
+        otherUserToken = response.body.token;
+      });
+  });
+
+  test('should be authenticated', async () => {
+    await api
+      .delete(`/api/blogs/${someBlog.id}`)
+      .expect(401)
+      .expect('Content-Type', /application\/json/)
+      .expect((response) => 'error' in response.body === true);
+  });
+
+  test('others than blog owner cannot delete blog', async () => {
+    await api
+      .delete(`/api/blogs/${someBlog.id}`)
+      .set('Authorization', `Bearer ${otherUserToken}`)
+      .expect(401)
+      .expect('Content-Type', /application\/json/)
+      .expect((response) => 'error' in response.body === true);
+  });
+
+  test('blog owner can delete blog', async () => {
+    await api
+      .delete(`/api/blogs/${someBlog.id}`)
+      .set('Authorization', `Bearer ${userToken}`)
+      .expect(204);
   });
 });
 
