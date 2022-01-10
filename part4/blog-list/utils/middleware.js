@@ -16,6 +16,7 @@ const userExtractor = (request, response, next) => {
   }
 
   request.userId = decodedToken.id;
+  next();
 };
 
 const unknownEndpoint = (req, res) => {
