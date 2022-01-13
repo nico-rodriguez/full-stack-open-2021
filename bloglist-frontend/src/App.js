@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react'
-import Blog from './components/Blog'
+import { useState, useEffect } from 'react';
 import blogService from './services/blogs'
 import Login from './components/Login';
 import Logout from './components/Logout';
+import BlogList from './components/BlogList';
+import BlogForm from './components/BlogForm';
 
 const App = () => {
   const [blogs, setBlogs] = useState([]);
@@ -17,19 +18,20 @@ const App = () => {
     if (userCredentials) {
       setUser(JSON.parse(userCredentials));
     }
-  }, [])
+  }, []);
 
-  const blogsList = blogs.map(blog =>
-    <Blog key={blog.id} blog={blog} />
-  );
+  const addBlog = (blog) => {
+    setBlogs([...blogs, blog]);
+  }
 
   return (
     <>
       {user
         ? <>
           <h2>blogs</h2>
+          <BlogList blogs={blogs} />
           <Logout username={user.username} setUser={setUser} />
-          {blogsList}
+          <BlogForm addBlog={addBlog} />
         </>
         : <Login setUser={setUser} />
       }
@@ -37,4 +39,4 @@ const App = () => {
   )
 }
 
-export default App
+export default App;
