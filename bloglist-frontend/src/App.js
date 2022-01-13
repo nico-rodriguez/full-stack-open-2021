@@ -34,13 +34,21 @@ const App = () => {
     setBlogs([...blogs, blog]);
   }
 
+  const updateBlog = (blogId, updatedBlog) => {
+    setBlogs(blogs.map((blog) => blog.id === blogId ? updatedBlog : blog));
+  }
+
+  const removeBlog = (blogId) => {
+    setBlogs(blogs.filter(({ id }) => id !== blogId));
+  }
+
   return (
     <>
        <Notification message={errMsg} notificationType={notificationType}/>
       {user
         ? <>
           <h2>blogs</h2>
-          <BlogList blogs={blogs} />
+          <BlogList blogs={blogs} updateBlog={updateBlog} removeBlog={removeBlog} />
           <Logout username={user.username} setUser={setUser} />
           <Togglable buttonLabel="Create new blog">
             <BlogForm addBlog={addBlog} displayNotification={displayNotification} />

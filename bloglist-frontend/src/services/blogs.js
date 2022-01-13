@@ -18,4 +18,18 @@ const create = async (title, author, url) => {
   return data;
 }
 
-export default { getAll, create };
+const update = async (blogUpdate, blogId) => {
+  const { data } = await axios.put(`${baseUrl}/${blogId}`, blogUpdate);
+  return data;
+}
+
+const remove = async (blogId) => {
+  const user = window.localStorage.getItem('user');
+  const userToken = JSON.parse(user).token;
+
+  await axios.delete(`${baseUrl}/${blogId}`, {
+    headers: { 'Authorization': 'Bearer ' + userToken }
+  })
+}
+
+export default { getAll, create, update, remove };

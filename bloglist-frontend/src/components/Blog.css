@@ -1,0 +1,12 @@
+p {
+  padding: 0px;
+  margin: 2px;
+}
+
+.blog {
+  padding-top: 2px;
+  padding-left: 2px;
+  border: solid;
+  border-width: 1px;
+  margin-bottom: 5px;
+}
