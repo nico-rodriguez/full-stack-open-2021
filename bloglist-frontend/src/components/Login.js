@@ -1,17 +1,21 @@
 import { useState } from "react";
 import loginService from "../services/login";
 
-const Login = ({ setUser }) => {
+const Login = ({ setUser, displayNotification }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
   const handleLogin = async (event) => {
     event.preventDefault();
-    const data = await loginService.login(username, password);
-    window.localStorage.setItem('user', JSON.stringify(data));
-    setUsername('');
-    setPassword('');
-    setUser(data);
+    try {
+      const data = await loginService.login(username, password);
+      window.localStorage.setItem('user', JSON.stringify(data));
+      setUsername('');
+      setPassword('');
+      setUser(data);
+    } catch (error) {
+      displayNotification('wrong username or password', 'error', 5000);
+    }
   };
 
   return <>
