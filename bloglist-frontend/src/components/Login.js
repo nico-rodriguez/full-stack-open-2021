@@ -1,7 +1,8 @@
-import { useState } from "react";
-import loginService from "../services/login";
+/* eslint-disable jsx-a11y/label-has-associated-control */
+import { useState } from 'react';
+import loginService from '../services/login';
 
-const Login = ({ setUser, displayNotification }) => {
+function Login({ setUser, displayNotification }) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
@@ -18,19 +19,22 @@ const Login = ({ setUser, displayNotification }) => {
     }
   };
 
-  return <>
-    <h2>Log in to application</h2>
-    <form onSubmit={handleLogin}>
-      <div>
-        <label htmlFor="username">Username</label>
-        <input type="text" value={username} name="username" id="username" onChange={({ target }) => setUsername(target.value)}></input>
-      </div>
-      <div>
-        <label>Password</label>
-        <input type="password" value={password} name="password" id="password" onChange={({ target }) => setPassword(target.value)}></input>
-      </div>
-      <button type="submit">Login</button>
-    </form>
-  </>};
+  return (
+    <>
+      <h2>Log in to application</h2>
+      <form onSubmit={handleLogin}>
+        <div>
+          <label htmlFor="username">Username</label>
+          <input type="text" value={username} name="username" id="username" onChange={({ target }) => setUsername(target.value)} />
+        </div>
+        <div>
+          <label>Password</label>
+          <input type="password" value={password} name="password" id="password" onChange={({ target }) => setPassword(target.value)} />
+        </div>
+        <button type="submit">Login</button>
+      </form>
+    </>
+  );
+}
 
 export default Login;
