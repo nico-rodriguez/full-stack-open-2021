@@ -5,7 +5,7 @@ const Logout = ({ username, setUser }) => {
   }
 
   return <>
-  <p>{username} logged in</p>
+  <p style={{ display: 'inline-block' }}>{username} logged in</p>
   <button onClick={handleLogout}>Logout</button>
   </>;
 };
