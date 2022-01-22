@@ -50,6 +50,7 @@ function App() {
           <h2>blogs</h2>
           <BlogList
             blogs={blogs}
+            displayNotification={displayNotification}
             updateBlog={updateBlog}
             removeBlog={removeBlog}
           />
