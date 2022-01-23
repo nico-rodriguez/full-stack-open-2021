@@ -1,24 +1,17 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import { useState } from 'react';
-import blogService from '../services/blogs';
 
-function BlogForm({ addBlog, displayNotification }) {
+function BlogForm({ addBlog }) {
   const [title, setTitle] = useState('');
   const [author, setAuthor] = useState('');
   const [url, setUrl] = useState('');
 
   const handleCreate = async (event) => {
     event.preventDefault();
-    try {
-      const data = await blogService.create(title, author, url);
-      setTitle('');
-      setAuthor('');
-      setUrl('');
-      addBlog(data);
-      displayNotification('Blog added successfully!', 'success', 5000);
-    } catch (error) {
-      displayNotification(error.message, 'error', 5000);
-    }
+    await addBlog({ title, author, url });
+    setTitle('');
+    setAuthor('');
+    setUrl('');
   };
 
   return (

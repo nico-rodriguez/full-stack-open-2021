@@ -30,16 +30,47 @@ function App() {
     setTimeout(() => setErrMsg(null), timeOut);
   };
 
-  const addBlog = (blog) => {
-    setBlogs([...blogs, blog]);
+  const addBlog = async ({ title, author, url }) => {
+    try {
+      const newBlog = await blogService.create(title, author, url);
+      setBlogs([...blogs, newBlog]);
+      displayNotification('Blog added successfully!', 'success', 5000);
+    } catch (error) {
+      displayNotification(error.message, 'error', 5000);
+    }
   };
 
   const updateBlog = (blogId, updatedBlog) => {
     setBlogs(blogs.map((blog) => (blog.id === blogId ? updatedBlog : blog)));
   };
 
+  const handleLike = async (blog) => {
+    try {
+      const updatedBlog = await blogService.update({
+        ...{
+          title: blog.title, author: blog.author, url: blog.url,
+        },
+        likes: blog.likes + 1,
+      }, blog.id);
+      updateBlog(blog.id, updatedBlog);
+    } catch (error) {
+      displayNotification(error.message, 'error', 5000);
+    }
+  };
+
   const removeBlog = (blogId) => {
     setBlogs(blogs.filter(({ id }) => id !== blogId));
+  };
+
+  const handleRemove = async (blog) => {
+    try {
+      if (window.confirm(`Remove blog ${blog.title} by ${blog.author}?`)) {
+        await blogService.remove(blog.id);
+        removeBlog(blog.id);
+      }
+    } catch (error) {
+      displayNotification(error.message, 'error', 5000);
+    }
   };
 
   return (
@@ -50,15 +81,13 @@ function App() {
           <h2>blogs</h2>
           <BlogList
             blogs={blogs}
-            displayNotification={displayNotification}
-            updateBlog={updateBlog}
-            removeBlog={removeBlog}
+            handleLike={handleLike}
+            handleRemove={handleRemove}
           />
           <Logout username={user.username} setUser={setUser} />
           <Togglable buttonLabel="Create new blog">
             <BlogForm
               addBlog={addBlog}
-              displayNotification={displayNotification}
             />
           </Togglable>
         </>

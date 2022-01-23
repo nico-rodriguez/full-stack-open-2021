@@ -1,6 +1,6 @@
 import Blog from './Blog';
 
-function BlogList({ blogs, displayNotification, updateBlog, removeBlog }) {
+function BlogList({ blogs, handleLike, handleRemove }) {
   return (
     <>
       {[...blogs]
@@ -10,8 +10,8 @@ function BlogList({ blogs, displayNotification, updateBlog, removeBlog }) {
           const { username } = JSON.parse(user);
 
           return blog.user && blog.user.username === username
-            ? <Blog key={blog.id} blog={blog} displayNotification={displayNotification} updateBlog={updateBlog} removeBlog={removeBlog} />
-            : <Blog key={blog.id} blog={blog} updateBlog={updateBlog} />;
+            ? <Blog key={blog.id} blog={blog} handleLike={handleLike} handleRemove={handleRemove} />
+            : <Blog key={blog.id} blog={blog} handleLike={handleLike} />;
         })}
     </>
   );
