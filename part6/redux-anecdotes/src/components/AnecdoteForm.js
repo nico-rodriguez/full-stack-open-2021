@@ -1,5 +1,5 @@
 import { useDispatch } from 'react-redux';
-import { addAnecdote } from '../reducers/actionCreators';
+import { addAnecdote } from '../redux/reducers/anecdotes';
 
 const AnecdoteForm = () => {
   const dispatch = useDispatch();
@@ -7,7 +7,6 @@ const AnecdoteForm = () => {
   const add = (e) => {
     e.preventDefault();
     const content = e.target.content.value;
-    console.log('add', content);
     dispatch(addAnecdote(content));
     e.target.reset();
   };
