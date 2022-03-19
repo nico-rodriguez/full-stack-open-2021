@@ -1,4 +1,43 @@
-# Phonebook backend
+# phonebook-backend
+
+## Features
+
+- Node.js and Express
+  - Express
+  - `nodemon`
+  - REST
+  - Fetching a single resource
+  - Deleting resources
+  - Postman
+  - The Visual Studio Code REST client
+  - Receiving data
+  - About HTTP request types (Idempotence)
+  - Middleware
+- Deploying app to internet
+  - Same origin policy and CORS
+  - Application to the internet (Heroku)
+  - Frontend production build
+  - Serving static files from the backend
+  - The whole app to internet
+  - Streamlining deploying of the frontend
+  - Proxy
+- Saving data to MongoDB
+  - MongoDB
+  - Schema
+  - Creating and saving objects
+  - Fetching objects from the database
+  - Backend connected to a database
+  - Mongoose `toJSON`
+  - Database configuration into its own module
+  - Using database in route handlers
+  - Verifying frontend and backend integration
+  - Error handling
+  - Moving error handling into middleware
+  - The order of the middleware loading
+- Validation and ESLint
+  - Mongoose validation
+  - Deploying the database backend to production
+  - Lint
 
 ## About
 
