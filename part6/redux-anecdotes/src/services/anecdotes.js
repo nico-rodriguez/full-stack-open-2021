@@ -12,4 +12,9 @@ const postAnecdote = async (content) => {
   return data;
 };
 
-export default { getAll, postAnecdote };
+const voteAnecdote = async (anecdoteId, votes) => {
+  const { data } = await axios.patch(baseUrl + `/${anecdoteId}`, { votes });
+  return data;
+};
+
+export default { getAll, postAnecdote, voteAnecdote };

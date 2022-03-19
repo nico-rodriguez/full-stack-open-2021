@@ -8,3 +8,11 @@ Content-Type: application/json
   "content": "New anecdote",
   "votes": 0
 }
+
+###
+PATCH http://localhost:3001/anecdotes/98312 HTTP/1.1
+Content-Type: application/json
+
+{
+  "votes": 10
+}
