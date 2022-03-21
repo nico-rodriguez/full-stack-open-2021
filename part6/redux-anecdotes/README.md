@@ -14,3 +14,7 @@
   - Redux DevTools
 - Communicating with server in a redux application
   - Asynchronous actions and redux thunk
+- `connect`
+  - Using the `connect` function to share the redux store to components
+  - `mapDispatchToProps`
+  - Referencing action creators passed as props
