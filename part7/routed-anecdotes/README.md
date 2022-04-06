@@ -7,3 +7,7 @@
   - React Router
   - Parameterized routes
   - `useNavigate`
+- Custom hooks
+  - Hooks
+  - Custom hooks
+  - Spread attributes
