@@ -79,10 +79,10 @@ const Footer = () => (
 
 const CreateNew = (props) => {
   // useField returns {name, value, onChange}
-  const content = useField('content');
-  const author = useField('author');
-  const info = useField('info');
-  const formFields = [content, author, info];
+  const { reset: contentReset, ...content } = useField('content');
+  const { reset: authorReset, ...author } = useField('author');
+  const { reset: infoReset, ...info } = useField('info');
+  const fieldsReset = [contentReset, authorReset, infoReset];
 
   const navigate = useNavigate();
 
@@ -98,8 +98,8 @@ const CreateNew = (props) => {
   };
 
   const handleReset = () => {
-    formFields.forEach((field) => {
-      field.reset();
+    fieldsReset.forEach((reset) => {
+      reset();
     });
   };
 
