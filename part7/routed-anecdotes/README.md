@@ -6,3 +6,4 @@
   - Application navigation structure
   - React Router
   - Parameterized routes
+  - `useNavigate`
