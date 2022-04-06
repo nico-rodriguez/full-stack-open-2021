@@ -5,4 +5,4 @@
 - React router
   - Application navigation structure
   - React Router
-  - 
+  - Parameterized routes
