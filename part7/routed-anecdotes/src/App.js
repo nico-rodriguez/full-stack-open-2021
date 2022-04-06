@@ -82,6 +82,7 @@ const CreateNew = (props) => {
   const content = useField('content');
   const author = useField('author');
   const info = useField('info');
+  const formFields = [content, author, info];
 
   const navigate = useNavigate();
 
@@ -94,6 +95,12 @@ const CreateNew = (props) => {
       votes: 0,
     });
     navigate('/');
+  };
+
+  const handleReset = () => {
+    formFields.forEach((field) => {
+      field.reset();
+    });
   };
 
   return (
@@ -113,6 +120,9 @@ const CreateNew = (props) => {
           <input {...info} />
         </div>
         <button>create</button>
+        <button type='button' onClick={handleReset}>
+          reset
+        </button>
       </form>
     </div>
   );
