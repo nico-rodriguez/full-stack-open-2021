@@ -33,4 +33,4 @@ The development server includes the automatic reload on save (thanks to `nodemon
 
 It listens on the port given by the `PORT` environment variable (see `.env` file).
 
-The server expects a MongoDB listening on `TEST_MONGODB_URI` (see `.env` file).
+The server expects a MongoDB listening on `TEST_MONGODB_URI` (see `.env` file). For instance, for a local MongoDB at `mongodb/` folder run `mongod --dbpath=mongodb --bind_ip 127.0.0.1`.
