@@ -75,10 +75,7 @@ function App() {
 
   return (
     <>
-      <Notification
-        message={notification.message}
-        notificationType={notification.type}
-      />
+      <Notification message={notification.message} type={notification.type} />
       {user ? (
         <>
           <h2>blogs</h2>
