@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import { Header, List } from 'semantic-ui-react';
 import users from '../services/users';
 
 function User() {
@@ -14,13 +15,13 @@ function User() {
 
   return user ? (
     <>
-      <h2>{user.name}</h2>
-      <h3>added blogs</h3>
-      <ul>
+      <Header as='h2'>{user.name}</Header>
+      <Header as='h3'>added blogs</Header>
+      <List bulleted>
         {user.blogs.map(({ title, id }) => (
-          <p key={id}>{title}</p>
+          <List.Item key={id}>{title}</List.Item>
         ))}
-      </ul>
+      </List>
     </>
   ) : null;
 }

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { Header, Table } from 'semantic-ui-react';
 import users from '../services/users';
 
 function Users() {
@@ -13,25 +14,25 @@ function Users() {
 
   return (
     <>
-      <h2>Users</h2>
-      <table>
-        <thead>
-          <tr>
-            <td>&nbsp;</td>
-            <td>blogs created</td>
-          </tr>
-        </thead>
-        <tbody>
+      <Header as='h2'>Users</Header>
+      <Table celled>
+        <Table.Header>
+          <Table.Row>
+            <Table.HeaderCell>&nbsp;</Table.HeaderCell>
+            <Table.HeaderCell>blogs created</Table.HeaderCell>
+          </Table.Row>
+        </Table.Header>
+        <Table.Body>
           {usersList.map(({ name, blogs, id }) => (
-            <tr key={id}>
-              <td>
+            <Table.Row key={id}>
+              <Table.Cell>
                 <Link to={`${id}`}>{name}</Link>
-              </td>
-              <td>{blogs.length}</td>
-            </tr>
+              </Table.Cell>
+              <Table.Cell>{blogs.length}</Table.Cell>
+            </Table.Row>
           ))}
-        </tbody>
-      </table>
+        </Table.Body>
+      </Table>
     </>
   );
 }

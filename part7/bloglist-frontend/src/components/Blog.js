@@ -1,8 +1,10 @@
+/* eslint-disable object-curly-newline */
 /* eslint-disable react/jsx-one-expression-per-line */
 import './Blog.css';
 import PropTypes from 'prop-types';
 import { useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
+import { Form, Button, Header, Input, List } from 'semantic-ui-react';
 import blogs from '../services/blogs';
 import { addComment } from '../redux/blogSlice';
 
@@ -34,26 +36,26 @@ function Blog({ blog, handleLike, handleRemove }) {
       </a>
       <div>
         <p style={{ display: 'inline-block' }}>{singleBlog.likes}</p>
-        <button type='button' onClick={() => handleLike(singleBlog)}>
+        <Button type='button' onClick={() => handleLike(singleBlog)}>
           Like
-        </button>
+        </Button>
         <p>added by {singleBlog.author}</p>
       </div>
       {singleBlog.user.username === user.username && (
-        <button type='button' onClick={() => handleRemove(singleBlog)}>
+        <Button type='button' onClick={() => handleRemove(singleBlog)}>
           Remove
-        </button>
+        </Button>
       )}
-      <h3>comments</h3>
-      <form onSubmit={handleSendComment}>
-        <input type='text' name='comment' />
-        <button type='submit'>add comment</button>
-      </form>
-      <ul>
+      <Header as='h3'>comments</Header>
+      <Form onSubmit={handleSendComment}>
+        <Input type='text' name='comment' />
+        <Button type='submit'>add comment</Button>
+      </Form>
+      <List bulleted>
         {singleBlog.comments.map((comment) => (
-          <li>{comment}</li>
+          <List.Item key={comment}>{comment}</List.Item>
         ))}
-      </ul>
+      </List>
     </div>
   ) : null;
 }

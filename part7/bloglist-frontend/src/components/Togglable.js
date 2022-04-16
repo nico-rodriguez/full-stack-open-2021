@@ -1,4 +1,5 @@
 import PropTypes from 'prop-types';
+import { Button } from 'semantic-ui-react';
 
 import { useState } from 'react';
 
@@ -11,11 +12,15 @@ function Togglable({ buttonLabel, children }) {
   return (
     <>
       <div style={hideWhenVisible}>
-        <button type="button" onClick={() => setVisible(true)}>{buttonLabel}</button>
+        <Button type='button' onClick={() => setVisible(true)}>
+          {buttonLabel}
+        </Button>
       </div>
       <div style={showWhenVisible}>
         {children}
-        <button type="button" onClick={() => setVisible(false)}>Cancel</button>
+        <Button type='button' onClick={() => setVisible(false)}>
+          Cancel
+        </Button>
       </div>
     </>
   );

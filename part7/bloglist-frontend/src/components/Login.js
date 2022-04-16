@@ -1,6 +1,8 @@
+/* eslint-disable object-curly-newline */
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
+import { Button, Form, Header, Label, Input } from 'semantic-ui-react';
 import { setUser } from '../redux/userSlice';
 import loginService from '../services/login';
 
@@ -25,30 +27,30 @@ function Login({ displayNotification }) {
 
   return (
     <>
-      <h2>Log in to application</h2>
-      <form onSubmit={handleLogin}>
-        <div>
-          <label htmlFor='username'>Username</label>
-          <input
+      <Header as='h2'>Log in to application</Header>
+      <Form onSubmit={handleLogin}>
+        <Form.Field>
+          <Label htmlFor='username'>Username</Label>
+          <Input
             type='text'
             value={username}
             name='username'
             id='username'
             onChange={({ target }) => setUsername(target.value)}
           />
-        </div>
-        <div>
-          <label>Password</label>
-          <input
+        </Form.Field>
+        <Form.Field>
+          <Label>Password</Label>
+          <Input
             type='password'
             value={password}
             name='password'
             id='password'
             onChange={({ target }) => setPassword(target.value)}
           />
-        </div>
-        <button type='submit'>Login</button>
-      </form>
+        </Form.Field>
+        <Button type='submit'>Login</Button>
+      </Form>
     </>
   );
 }

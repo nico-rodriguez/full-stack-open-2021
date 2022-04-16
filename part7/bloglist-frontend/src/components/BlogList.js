@@ -3,6 +3,7 @@
 /* eslint-disable implicit-arrow-linebreak */
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
+import { List } from 'semantic-ui-react';
 
 function BlogList() {
   const blogs = useSelector((state) =>
@@ -12,13 +13,13 @@ function BlogList() {
   );
 
   return (
-    <ul>
+    <List>
       {blogs.map((blog) => (
-        <li key={blog.id}>
+        <List.Item key={blog.id}>
           <Link to={`/blogs/${blog.id}`}>{blog.title}</Link>
-        </li>
+        </List.Item>
       ))}
-    </ul>
+    </List>
   );
 }
 

@@ -3,6 +3,7 @@
 import { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Routes, Route, Link } from 'react-router-dom';
+import { Menu } from 'semantic-ui-react';
 import blogService from './services/blogs';
 import Login from './components/Login';
 import Logout from './components/Logout';
@@ -80,30 +81,35 @@ function App() {
 
   return (
     <>
-      <header>
+      <Menu>
         {user && (
-          <nav>
-            <Link to='/'>blogs</Link>
-            <Link to='/users'>users</Link>
-            <Logout />
-          </nav>
+          <>
+            <Menu.Item>
+              <Link to='/'>blogs</Link>
+            </Menu.Item>
+            <Menu.Item>
+              <Link to='/users'>users</Link>
+            </Menu.Item>
+            <Menu.Item>
+              <Logout />
+            </Menu.Item>
+          </>
         )}
-        <h1>blog app</h1>
-      </header>
+        <Menu.Item header>blog app</Menu.Item>
+      </Menu>
       <Notification message={notification.message} type={notification.type} />
-      {user ? (
-        <Togglable buttonLabel='Create new blog'>
-          <BlogForm addBlog={handleAdd} />
-        </Togglable>
-      ) : (
-        <Login displayNotification={displayNotification} />
-      )}
+      {!user && <Login displayNotification={displayNotification} />}
       <Routes>
         <Route
           path='/'
           element={
             user && (
-              <BlogList handleLike={handleLike} handleRemove={handleRemove} />
+              <>
+                <Togglable buttonLabel='Create new blog'>
+                  <BlogForm addBlog={handleAdd} />
+                </Togglable>
+                <BlogList handleLike={handleLike} handleRemove={handleRemove} />
+              </>
             )
           }
         />

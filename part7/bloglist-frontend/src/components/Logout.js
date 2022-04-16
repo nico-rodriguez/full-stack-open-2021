@@ -1,4 +1,6 @@
+/* eslint-disable react/jsx-one-expression-per-line */
 import { useDispatch, useSelector } from 'react-redux';
+import { Button, Label } from 'semantic-ui-react';
 import { clearUser } from '../redux/userSlice';
 
 function Logout() {
@@ -12,13 +14,12 @@ function Logout() {
 
   return (
     <>
-      <p style={{ display: 'inline-block' }}>
-        {user.username}
-        logged in
-      </p>
-      <button type='button' onClick={handleLogout}>
+      <Label style={{ display: 'inline-block' }}>
+        {user.username}&nbsp; logged in
+      </Label>
+      <Button type='button' onClick={handleLogout}>
         Logout
-      </button>
+      </Button>
     </>
   );
 }
