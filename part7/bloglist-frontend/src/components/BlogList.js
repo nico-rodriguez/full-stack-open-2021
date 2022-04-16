@@ -2,30 +2,23 @@
 /* eslint-disable function-paren-newline */
 /* eslint-disable implicit-arrow-linebreak */
 import { useSelector } from 'react-redux';
-import Blog from './Blog';
+import { Link } from 'react-router-dom';
 
-function BlogList({ handleLike, handleRemove }) {
-  const user = useSelector((state) => state.user);
-  const { username } = user;
+function BlogList() {
   const blogs = useSelector((state) =>
-    state.blogs.sort(({ likes: likes1 }, { likes: likes2 }) => likes2 - likes1)
+    [...state.blogs].sort(
+      ({ likes: likes1 }, { likes: likes2 }) => likes2 - likes1
+    )
   );
 
   return (
-    <>
-      {blogs.map((blog) =>
-        blog.user && blog.user.username === username ? (
-          <Blog
-            key={blog.id}
-            blog={blog}
-            handleLike={handleLike}
-            handleRemove={handleRemove}
-          />
-        ) : (
-          <Blog key={blog.id} blog={blog} handleLike={handleLike} />
-        )
-      )}
-    </>
+    <ul>
+      {blogs.map((blog) => (
+        <li key={blog.id}>
+          <Link to={`/blogs/${blog.id}`}>{blog.title}</Link>
+        </li>
+      ))}
+    </ul>
   );
 }
 

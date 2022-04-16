@@ -6,8 +6,23 @@ const { userExtractor } = require('../utils/middleware');
 
 blogsRouter.get('/', async (request, response, next) => {
   try {
-    const blogs = await Blog.find({}).populate('user', { username: 1, name: 1 });
+    const blogs = await Blog.find({}).populate('user', {
+      username: 1,
+      name: 1,
+    });
     response.json(blogs);
+  } catch (error) {
+    next(error);
+  }
+});
+
+blogsRouter.get('/:id', async (request, response, next) => {
+  try {
+    const blog = await Blog.findById(request.params.id).populate('user', {
+      username: 1,
+      name: 1,
+    });
+    response.json(blog);
   } catch (error) {
     next(error);
   }
@@ -18,7 +33,7 @@ blogsRouter.post('/', userExtractor, async (request, response, next) => {
     const user = await User.findById(request.userId);
     const blogToSave = new Blog({
       ...request.body,
-      user: user._id // assign the user id to the blog
+      user: user._id, // assign the user id to the blog
     });
     const blog = await blogToSave.save();
 
@@ -38,7 +53,7 @@ blogsRouter.put('/:id', async (request, response, next) => {
       request.params.id,
       request.body,
       { new: true, runValidators: true }
-    );
+    ).populate('user', { username: 1, name: 1, _id: 1 });
     response.status(200).json(updatedBlog);
   } catch (error) {
     next(error);
@@ -49,7 +64,9 @@ blogsRouter.delete('/:id', userExtractor, async (request, response, next) => {
   try {
     const blog = await Blog.findById(request.params.id);
     if (request.userId !== blog.user.toString()) {
-      return response.status(401).json({ error: 'unauthorized to delete this blog' });
+      return response
+        .status(401)
+        .json({ error: 'unauthorized to delete this blog' });
     }
 
     await Blog.findByIdAndDelete(request.params.id);

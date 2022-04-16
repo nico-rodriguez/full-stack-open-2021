@@ -8,7 +8,9 @@ usersRouter.post('/', async (request, response, next) => {
   }
 
   if (request.body.password.length < 3) {
-    return response.status(400).send({ error: 'password must be at least 3 characters long' });
+    return response
+      .status(400)
+      .send({ error: 'password must be at least 3 characters long' });
   }
 
   try {
@@ -27,9 +29,26 @@ usersRouter.post('/', async (request, response, next) => {
 usersRouter.get('/', async (request, response, next) => {
   try {
     const users = await User.find({}).populate('blogs', {
-      title: 1, author: 1, url: 1, _id: 1
+      title: 1,
+      author: 1,
+      url: 1,
+      _id: 1,
     });
     response.status(200).json(users);
+  } catch (error) {
+    next(error);
+  }
+});
+
+usersRouter.get('/:userId', async (request, response, next) => {
+  try {
+    const user = await User.findById(request.params.userId).populate('blogs', {
+      title: 1,
+      author: 1,
+      url: 1,
+      _id: 1,
+    });
+    response.status(200).json(user);
   } catch (error) {
     next(error);
   }

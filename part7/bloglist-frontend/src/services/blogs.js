@@ -7,15 +7,26 @@ const getAll = async () => {
   return data;
 };
 
+const getOne = async (blogId) => {
+  const { data } = await axios.get(`${baseUrl}/${blogId}`);
+  return data;
+};
+
 const create = async (title, author, url) => {
   const user = window.localStorage.getItem('user');
   const userToken = JSON.parse(user).token;
 
-  const { data } = await axios.post(baseUrl, {
-    title, author, url,
-  }, {
-    headers: { Authorization: `Bearer ${userToken}` },
-  });
+  const { data } = await axios.post(
+    baseUrl,
+    {
+      title,
+      author,
+      url,
+    },
+    {
+      headers: { Authorization: `Bearer ${userToken}` },
+    }
+  );
   return data;
 };
 
@@ -34,5 +45,9 @@ const remove = async (blogId) => {
 };
 
 export default {
-  getAll, create, update, remove,
+  getAll,
+  getOne,
+  create,
+  update,
+  remove,
 };

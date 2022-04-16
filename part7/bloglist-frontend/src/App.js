@@ -13,6 +13,9 @@ import Togglable from './components/Togglable';
 import { clearNotification, setNotification } from './redux/notificationSlice';
 import { setUser } from './redux/userSlice';
 import { addBlog, removeBlog, setBlogs, updateBlog } from './redux/blogSlice';
+import Users from './components/Users';
+import User from './components/User';
+import Blog from './components/Blog';
 
 function App() {
   const user = useSelector((state) => state.user);
@@ -76,31 +79,36 @@ function App() {
   };
 
   return (
-    <Routes>
-      <Route
-        path='/'
-        element={
-          <>
-            <Notification
-              message={notification.message}
-              type={notification.type}
-            />
-            {user ? (
-              <>
-                <h2>blogs</h2>
-                <BlogList handleLike={handleLike} handleRemove={handleRemove} />
-                <Logout />
-                <Togglable buttonLabel='Create new blog'>
-                  <BlogForm addBlog={handleAdd} />
-                </Togglable>
-              </>
-            ) : (
-              <Login displayNotification={displayNotification} />
-            )}
-          </>
-        }
-      />
-    </Routes>
+    <>
+      <Notification message={notification.message} type={notification.type} />
+      {user ? (
+        <>
+          <h2>blogs</h2>
+          <Logout />
+          <Togglable buttonLabel='Create new blog'>
+            <BlogForm addBlog={handleAdd} />
+          </Togglable>
+        </>
+      ) : (
+        <Login displayNotification={displayNotification} />
+      )}
+      <Routes>
+        <Route
+          path='/'
+          element={
+            user && (
+              <BlogList handleLike={handleLike} handleRemove={handleRemove} />
+            )
+          }
+        />
+        <Route path='/users' element={user && <Users />} />
+        <Route path='/users/:userId' element={user && <User />} />
+        <Route
+          path='/blogs/:blogId'
+          element={<Blog handleLike={handleLike} handleRemove={handleRemove} />}
+        />
+      </Routes>
+    </>
   );
 }
 
