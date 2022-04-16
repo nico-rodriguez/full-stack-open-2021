@@ -15,18 +15,22 @@ function Users() {
     <>
       <h2>Users</h2>
       <table>
-        <tr>
-          <td>&nbsp;</td>
-          <td>blogs created</td>
-        </tr>
-        {usersList.map(({ name, blogs, id }) => (
-          <tr key={id}>
-            <td>
-              <Link to={`${id}`}>{name}</Link>
-            </td>
-            <td>{blogs.length}</td>
+        <thead>
+          <tr>
+            <td>&nbsp;</td>
+            <td>blogs created</td>
           </tr>
-        ))}
+        </thead>
+        <tbody>
+          {usersList.map(({ name, blogs, id }) => (
+            <tr key={id}>
+              <td>
+                <Link to={`${id}`}>{name}</Link>
+              </td>
+              <td>{blogs.length}</td>
+            </tr>
+          ))}
+        </tbody>
       </table>
     </>
   );

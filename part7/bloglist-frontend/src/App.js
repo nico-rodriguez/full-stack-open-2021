@@ -2,7 +2,7 @@
 /* eslint-disable object-curly-newline */
 import { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Link } from 'react-router-dom';
 import blogService from './services/blogs';
 import Login from './components/Login';
 import Logout from './components/Logout';
@@ -80,15 +80,21 @@ function App() {
 
   return (
     <>
+      <header>
+        {user && (
+          <nav>
+            <Link to='/'>blogs</Link>
+            <Link to='/users'>users</Link>
+            <Logout />
+          </nav>
+        )}
+        <h1>blog app</h1>
+      </header>
       <Notification message={notification.message} type={notification.type} />
       {user ? (
-        <>
-          <h2>blogs</h2>
-          <Logout />
-          <Togglable buttonLabel='Create new blog'>
-            <BlogForm addBlog={handleAdd} />
-          </Togglable>
-        </>
+        <Togglable buttonLabel='Create new blog'>
+          <BlogForm addBlog={handleAdd} />
+        </Togglable>
       ) : (
         <Login displayNotification={displayNotification} />
       )}
