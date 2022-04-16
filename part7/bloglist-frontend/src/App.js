@@ -1,6 +1,8 @@
+/* eslint-disable react/jsx-wrap-multilines */
 /* eslint-disable object-curly-newline */
 import { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { Routes, Route } from 'react-router-dom';
 import blogService from './services/blogs';
 import Login from './components/Login';
 import Logout from './components/Logout';
@@ -74,21 +76,31 @@ function App() {
   };
 
   return (
-    <>
-      <Notification message={notification.message} type={notification.type} />
-      {user ? (
-        <>
-          <h2>blogs</h2>
-          <BlogList handleLike={handleLike} handleRemove={handleRemove} />
-          <Logout />
-          <Togglable buttonLabel='Create new blog'>
-            <BlogForm addBlog={handleAdd} />
-          </Togglable>
-        </>
-      ) : (
-        <Login displayNotification={displayNotification} />
-      )}
-    </>
+    <Routes>
+      <Route
+        path='/'
+        element={
+          <>
+            <Notification
+              message={notification.message}
+              type={notification.type}
+            />
+            {user ? (
+              <>
+                <h2>blogs</h2>
+                <BlogList handleLike={handleLike} handleRemove={handleRemove} />
+                <Logout />
+                <Togglable buttonLabel='Create new blog'>
+                  <BlogForm addBlog={handleAdd} />
+                </Togglable>
+              </>
+            ) : (
+              <Login displayNotification={displayNotification} />
+            )}
+          </>
+        }
+      />
+    </Routes>
   );
 }
 
