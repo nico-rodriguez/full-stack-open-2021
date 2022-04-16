@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react';
+/* eslint-disable object-curly-newline */
+import { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import blogService from './services/blogs';
 import Login from './components/Login';
@@ -9,15 +10,15 @@ import Notification from './components/Notification';
 import Togglable from './components/Togglable';
 import { clear, set } from './redux/notificationSlice';
 import { login } from './redux/userSlice';
+import { addBlog, removeBlog, setBlogs, updateBlog } from './redux/blogSlice';
 
 function App() {
-  const [blogs, setBlogs] = useState([]);
   const user = useSelector((state) => state.user);
   const notification = useSelector((state) => state.notification);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    blogService.getAll().then((blogsList) => setBlogs(blogsList));
+    blogService.getAll().then((blogsList) => dispatch(setBlogs(blogsList)));
   }, []);
 
   useEffect(() => {
@@ -32,18 +33,14 @@ function App() {
     setTimeout(() => dispatch(clear()), timeOut);
   };
 
-  const addBlog = async ({ title, author, url }) => {
+  const handleAdd = async ({ title, author, url }) => {
     try {
       const newBlog = await blogService.create(title, author, url);
-      setBlogs([...blogs, newBlog]);
+      dispatch(addBlog(newBlog));
       displayNotification('Blog added successfully!', 'success', 5000);
     } catch (error) {
       displayNotification(error.message, 'error', 5000);
     }
-  };
-
-  const updateBlog = (blogId, updatedBlog) => {
-    setBlogs(blogs.map((blog) => (blog.id === blogId ? updatedBlog : blog)));
   };
 
   const handleLike = async (blog) => {
@@ -59,21 +56,17 @@ function App() {
         },
         blog.id
       );
-      updateBlog(blog.id, updatedBlog);
+      dispatch(updateBlog(updatedBlog));
     } catch (error) {
       displayNotification(error.message, 'error', 5000);
     }
-  };
-
-  const removeBlog = (blogId) => {
-    setBlogs(blogs.filter(({ id }) => id !== blogId));
   };
 
   const handleRemove = async (blog) => {
     try {
       if (window.confirm(`Remove blog ${blog.title} by ${blog.author}?`)) {
         await blogService.remove(blog.id);
-        removeBlog(blog.id);
+        dispatch(removeBlog(blog.id));
       }
     } catch (error) {
       displayNotification(error.message, 'error', 5000);
@@ -89,14 +82,10 @@ function App() {
       {user ? (
         <>
           <h2>blogs</h2>
-          <BlogList
-            blogs={blogs}
-            handleLike={handleLike}
-            handleRemove={handleRemove}
-          />
+          <BlogList handleLike={handleLike} handleRemove={handleRemove} />
           <Logout />
           <Togglable buttonLabel='Create new blog'>
-            <BlogForm addBlog={addBlog} />
+            <BlogForm addBlog={handleAdd} />
           </Togglable>
         </>
       ) : (
