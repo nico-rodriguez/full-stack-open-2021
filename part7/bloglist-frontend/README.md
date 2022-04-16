@@ -5,7 +5,9 @@ Copied from `part5/bloglist-frontend`.
 ## Features
 
 - Redux
-  - 
+  - Redux Toolkit
+- Styles
+  - Semantic UI
 
 ## Running
 
