@@ -8,10 +8,11 @@ import BlogForm from './components/BlogForm';
 import Notification from './components/Notification';
 import Togglable from './components/Togglable';
 import { clear, set } from './redux/notificationSlice';
+import { login } from './redux/userSlice';
 
 function App() {
   const [blogs, setBlogs] = useState([]);
-  const [user, setUser] = useState(null);
+  const user = useSelector((state) => state.user);
   const notification = useSelector((state) => state.notification);
   const dispatch = useDispatch();
 
@@ -22,7 +23,7 @@ function App() {
   useEffect(() => {
     const userCredentials = window.localStorage.getItem('user');
     if (userCredentials) {
-      setUser(JSON.parse(userCredentials));
+      dispatch(login(JSON.parse(userCredentials)));
     }
   }, []);
 
@@ -93,13 +94,13 @@ function App() {
             handleLike={handleLike}
             handleRemove={handleRemove}
           />
-          <Logout username={user.username} setUser={setUser} />
+          <Logout />
           <Togglable buttonLabel='Create new blog'>
             <BlogForm addBlog={addBlog} />
           </Togglable>
         </>
       ) : (
-        <Login setUser={setUser} displayNotification={displayNotification} />
+        <Login displayNotification={displayNotification} />
       )}
     </>
   );
