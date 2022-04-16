@@ -2,14 +2,29 @@
 import './Blog.css';
 import PropTypes from 'prop-types';
 import { useParams } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import blogs from '../services/blogs';
+import { addComment } from '../redux/blogSlice';
 
 function Blog({ blog, handleLike, handleRemove }) {
   const { blogId } = useParams();
+  const dispatch = useDispatch();
   const singleBlog = useSelector(
     (state) => state.blogs.find(({ id }) => id === blogId) || blog
   );
   const user = useSelector((state) => state.user);
+
+  const handleSendComment = (event) => {
+    event.preventDefault();
+    const comment = event.target.elements.comment.value;
+    blogs
+      .addComment(blogId, comment)
+      .then(() => {
+        dispatch(addComment({ id: blogId, comment }));
+        event.target.reset();
+      })
+      .catch(console.error);
+  };
 
   return singleBlog ? (
     <div className='blog'>
@@ -29,6 +44,16 @@ function Blog({ blog, handleLike, handleRemove }) {
           Remove
         </button>
       )}
+      <h3>comments</h3>
+      <form onSubmit={handleSendComment}>
+        <input type='text' name='comment' />
+        <button type='submit'>add comment</button>
+      </form>
+      <ul>
+        {singleBlog.comments.map((comment) => (
+          <li>{comment}</li>
+        ))}
+      </ul>
     </div>
   ) : null;
 }
