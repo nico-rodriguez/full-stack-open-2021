@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { logout } from '../redux/userSlice';
+import { clearUser } from '../redux/userSlice';
 
 function Logout() {
   const dispatch = useDispatch();
@@ -7,7 +7,7 @@ function Logout() {
 
   const handleLogout = () => {
     window.localStorage.removeItem('user');
-    dispatch(logout());
+    dispatch(clearUser());
   };
 
   return (

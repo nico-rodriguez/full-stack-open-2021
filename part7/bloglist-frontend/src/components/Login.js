@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { login } from '../redux/userSlice';
+import { setUser } from '../redux/userSlice';
 import loginService from '../services/login';
 
 function Login({ displayNotification }) {
@@ -17,7 +17,7 @@ function Login({ displayNotification }) {
       window.localStorage.setItem('user', JSON.stringify(data));
       setUsername('');
       setPassword('');
-      dispatch(login(data));
+      dispatch(setUser(data));
     } catch (error) {
       displayNotification('wrong username or password', 'error', 5000);
     }

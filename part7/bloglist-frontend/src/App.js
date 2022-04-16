@@ -8,8 +8,8 @@ import BlogList from './components/BlogList';
 import BlogForm from './components/BlogForm';
 import Notification from './components/Notification';
 import Togglable from './components/Togglable';
-import { clear, set } from './redux/notificationSlice';
-import { login } from './redux/userSlice';
+import { clearNotification, setNotification } from './redux/notificationSlice';
+import { setUser } from './redux/userSlice';
 import { addBlog, removeBlog, setBlogs, updateBlog } from './redux/blogSlice';
 
 function App() {
@@ -24,13 +24,13 @@ function App() {
   useEffect(() => {
     const userCredentials = window.localStorage.getItem('user');
     if (userCredentials) {
-      dispatch(login(JSON.parse(userCredentials)));
+      dispatch(setUser(JSON.parse(userCredentials)));
     }
   }, []);
 
   const displayNotification = (message, type, timeOut) => {
-    dispatch(set({ message, type }));
-    setTimeout(() => dispatch(clear()), timeOut);
+    dispatch(setNotification({ message, type }));
+    setTimeout(() => dispatch(clearNotification()), timeOut);
   };
 
   const handleAdd = async ({ title, author, url }) => {
