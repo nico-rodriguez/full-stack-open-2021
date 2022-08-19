@@ -1,4 +1,4 @@
-const { ApolloServer, gql } = require('apollo-server');
+const { ApolloServer, gql, UserInputError } = require('apollo-server');
 const { v1: uuid } = require('uuid');
 
 let authors = [
@@ -153,6 +153,24 @@ const resolvers = {
   Mutation: {
     addBook: (root, args) => {
       const { title, published, author: name, genres } = args;
+
+      if (title === '') {
+        throw new UserInputError('Title must be specified', {
+          invalidArgs: title,
+        });
+      }
+
+      if (author === '') {
+        throw new UserInputError('Author must be specified', {
+          invalidArgs: author,
+        });
+      }
+
+      if (genres.length === 0) {
+        throw new UserInputError('Some genre must be specified', {
+          invalidArgs: genres,
+        });
+      }
 
       const authorsNames = authors.map(({ name }) => name);
 
