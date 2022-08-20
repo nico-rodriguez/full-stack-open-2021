@@ -19,6 +19,9 @@ const Authors = (props) => {
 
     editAuthor({ variables: { name, born } });
 
+    // reset the form
+    event.target.reset();
+
     setName('');
     setBorn('');
   };
@@ -53,11 +56,14 @@ const Authors = (props) => {
         <form onSubmit={handleSubmit}>
           <div>
             name
-            <input
-              type='text'
-              value={name}
-              onChange={({ target }) => setName(target.value)}
-            />
+            <select onChange={({ target }) => setName(target.value)}>
+              <option selected value=''>
+                --select author--
+              </option>
+              {authors.data.allAuthors.map(({ name }) => (
+                <option value={name}>{name}</option>
+              ))}
+            </select>
           </div>
           <div>
             born
