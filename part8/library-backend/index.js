@@ -189,7 +189,15 @@ const resolvers = {
 
       const author = authors.find((author) => author.name === name);
       if (!author) {
-        return null;
+        throw new UserInputError('Author does not exist', {
+          invalidArgs: author,
+        });
+      }
+
+      if (setBornTo === 0) {
+        throw new UserInputError('Invalid birthyear', {
+          invalidArgs: setBornTo,
+        });
       }
 
       const updatedAuthor = { ...author, born: setBornTo };
