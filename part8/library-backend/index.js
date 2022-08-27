@@ -81,7 +81,11 @@ let books = [
   },
 ];
 
-MongoMemoryServer.create().then(async (mongod) => {
+MongoMemoryServer.create({
+  instance: {
+    port: 27017,
+  },
+}).then(async (mongod) => {
   const uri = mongod.getUri();
 
   mongoose.connect(uri);
@@ -132,26 +136,28 @@ const typeDefs = gql`
 
 const resolvers = {
   Author: {
-    // TODO
-    bookCount: (root) =>
-      books.filter(({ author }) => author === root.name).length,
+    bookCount: async (root) => Book.countDocuments({ author: root.id }),
   },
   Query: {
     bookCount: async () => Book.countDocuments({}),
     authorCount: async () => Author.countDocuments({}),
-    // TODO
     allBooks: async (root, args) => {
-      // // Filter by author
-      // let filteredBooks = args.author
-      //   ? books.filter((book) => book.author === args.author)
-      //   : books;
+      const { author, genre } = args;
 
-      // // Filter by genre
-      // filteredBooks = args.genre
-      //   ? filteredBooks.filter((book) => book.genres.includes(args.genre))
-      //   : filteredBooks;
+      const filter = {};
 
-      return Book.find({});
+      // Filter by author
+      if (author) {
+        const authorDoc = await Author.findOne({ name: author });
+        filter.author = authorDoc?._id;
+      }
+
+      // Filter by genre
+      if (genre) {
+        filter.genres = { $in: [genre] };
+      }
+
+      return await Book.find(filter).populate('author');
     },
     allAuthors: async () => Author.find({}),
   },
@@ -196,29 +202,26 @@ const resolvers = {
 
       return book;
     },
-    // TODO
-    editAuthor: (root, args) => {
+    editAuthor: async (root, args) => {
       const { name, setBornTo } = args;
 
-      const author = authors.find((author) => author.name === name);
+      const author = await Author.findOne({ name });
       if (!author) {
         throw new UserInputError('Author does not exist', {
-          invalidArgs: author,
+          invalidArgs: name,
         });
       }
 
-      if (setBornTo === 0) {
+      if (setBornTo <= 0) {
         throw new UserInputError('Invalid birthyear', {
           invalidArgs: setBornTo,
         });
       }
 
-      const updatedAuthor = { ...author, born: setBornTo };
-      authors = authors.map((author) =>
-        author.name === name ? updatedAuthor : author
-      );
+      author.born = setBornTo;
+      const authorUpdated = await author.save();
 
-      return updatedAuthor;
+      return authorUpdated;
     },
   },
 };
