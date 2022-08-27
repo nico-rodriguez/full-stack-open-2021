@@ -1,9 +1,18 @@
-const { ApolloServer, gql, UserInputError } = require('apollo-server');
+const {
+  ApolloServer,
+  gql,
+  UserInputError,
+  AuthenticationError,
+} = require('apollo-server');
+const jwt = require('jsonwebtoken');
 const { MongoMemoryServer } = require('mongodb-memory-server');
 const { default: mongoose } = require('mongoose');
 
+const JWT_SECRET = 'NEED_HERE_A_SECRET_KEY';
+
 const Author = require('./models/author.js');
 const Book = require('./models/book.js');
+const User = require('./models/user.js');
 
 let authors = [
   {
@@ -116,11 +125,22 @@ const typeDefs = gql`
     genres: [String!]!
   }
 
+  type User {
+    username: String!
+    favoriteGenre: String!
+    id: ID!
+  }
+
+  type Token {
+    value: String!
+  }
+
   type Query {
     bookCount: Int!
     authorCount: Int!
     allBooks(author: String, genre: String): [Book!]!
     allAuthors: [Author!]!
+    me: User
   }
 
   type Mutation {
@@ -131,6 +151,8 @@ const typeDefs = gql`
       genres: [String!]!
     ): Book!
     editAuthor(name: String!, setBornTo: Int!): Author
+    createUser(username: String!, favoriteGenre: String!): User
+    login(username: String!, password: String!): Token
   }
 `;
 
@@ -160,9 +182,15 @@ const resolvers = {
       return await Book.find(filter).populate('author');
     },
     allAuthors: async () => Author.find({}),
+    me: (root, args, context) => context.currentUser,
   },
   Mutation: {
-    addBook: async (root, args) => {
+    addBook: async (root, args, context) => {
+      const { currentUser } = context;
+      if (!currentUser) {
+        throw new AuthenticationError('Not authenticated');
+      }
+
       const { title, published, author: name, genres } = args;
 
       if (title === '') {
@@ -210,7 +238,12 @@ const resolvers = {
         throw new UserInputError(message, { invalidArgs: title });
       }
     },
-    editAuthor: async (root, args) => {
+    editAuthor: async (root, args, context) => {
+      const { currentUser } = context;
+      if (!currentUser) {
+        throw new AuthenticationError('Not authenticated');
+      }
+
       const { name, setBornTo } = args;
 
       const author = await Author.findOne({ name });
@@ -231,12 +264,45 @@ const resolvers = {
 
       return authorUpdated;
     },
+    createUser: async (root, args) => {
+      const { username, favoriteGenre } = args;
+
+      try {
+        const newUser = await User.create({ username, favoriteGenre });
+
+        return newUser;
+      } catch ({ message }) {
+        throw new UserInputError(message, { invalidArgs: username });
+      }
+    },
+    login: async (root, args) => {
+      const { username, password } = args;
+
+      const user = await User.findOne({ username });
+      if (!user || password !== 'secret') {
+        throw new UserInputError('Wrong credentials');
+      }
+
+      const token = jwt.sign({ username, id: user._id }, JWT_SECRET);
+      return { value: token };
+    },
   },
 };
 
 const server = new ApolloServer({
   typeDefs,
   resolvers,
+  context: async ({ req }) => {
+    const { authorization } = req.headers;
+    const isBearerToken = authorization?.toLowerCase().startsWith('bearer ');
+    if (authorization && isBearerToken) {
+      const token = authorization.substring(7);
+      const decodedToken = jwt.verify(token, JWT_SECRET);
+      const currentUser = await User.findById(decodedToken.id);
+
+      return { currentUser };
+    }
+  },
 });
 
 server.listen().then(({ url }) => {
