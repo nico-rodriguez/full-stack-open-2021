@@ -187,20 +187,28 @@ const resolvers = {
       const authorDoc = await Author.findOne({ name });
 
       if (!authorDoc) {
-        const newAuthorDoc = await Author.create({ name });
-        authorId = newAuthorDoc._id;
+        try {
+          const newAuthorDoc = await Author.create({ name });
+          authorId = newAuthorDoc._id;
+        } catch ({ message }) {
+          throw new UserInputError(message, { invalidArgs: name });
+        }
       } else {
         authorId = authorDoc._id;
       }
 
-      const book = await Book.create({
-        title,
-        published,
-        author: authorId,
-        genres,
-      });
+      try {
+        const book = await Book.create({
+          title,
+          published,
+          author: authorId,
+          genres,
+        });
 
-      return book;
+        return book.populate('author');
+      } catch ({ message }) {
+        throw new UserInputError(message, { invalidArgs: title });
+      }
     },
     editAuthor: async (root, args) => {
       const { name, setBornTo } = args;
