@@ -57,11 +57,11 @@ const Authors = (props) => {
           <div>
             name
             <select onChange={({ target }) => setName(target.value)}>
-              <option selected value=''>
-                --select author--
-              </option>
+              <option value=''>--select author--</option>
               {authors.data.allAuthors.map(({ name }) => (
-                <option value={name}>{name}</option>
+                <option key={name} value={name}>
+                  {name}
+                </option>
               ))}
             </select>
           </div>
