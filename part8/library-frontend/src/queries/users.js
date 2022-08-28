@@ -7,3 +7,11 @@ export const LOGIN = gql`
     }
   }
 `;
+
+export const USER_FAVORITE_GENRE = gql`
+  query {
+    me {
+      favoriteGenre
+    }
+  }
+`;

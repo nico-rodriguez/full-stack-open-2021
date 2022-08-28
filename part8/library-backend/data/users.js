@@ -1,6 +1,6 @@
 module.exports = [
   {
     username: 'nico',
-    favoriteGenre: 'mystery',
+    favoriteGenre: 'classic',
   },
 ];

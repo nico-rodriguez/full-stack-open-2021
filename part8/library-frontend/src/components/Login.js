@@ -1,7 +1,7 @@
 import { useMutation } from '@apollo/client';
 import { LOGIN } from '../queries/users';
 
-const Login = ({ show, setToken }) => {
+const Login = ({ show, setToken, onLogin }) => {
   const [login] = useMutation(LOGIN);
 
   if (!show) {
@@ -20,6 +20,7 @@ const Login = ({ show, setToken }) => {
     window.localStorage.setItem('user-token', token);
 
     event.target.reset();
+    onLogin();
   };
 
   return (
