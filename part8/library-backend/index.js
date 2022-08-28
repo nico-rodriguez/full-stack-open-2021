@@ -5,9 +5,11 @@ const server = require('./apollo/server.js');
 
 const Author = require('./models/author.js');
 const Book = require('./models/book.js');
+const User = require('./models/user.js');
 
 const authors = require('./data/authors.js');
 const books = require('./data/books.js');
+const users = require('./data/users.js');
 
 MongoMemoryServer.create({
   instance: {
@@ -26,6 +28,7 @@ MongoMemoryServer.create({
 
     await Book.create({ title, published, author: authorId, genres });
   }
+  await User.create(users);
 });
 
 server.listen().then(({ url }) => {

@@ -1,7 +1,11 @@
 const { UserInputError, AuthenticationError } = require('apollo-server');
+const jwt = require('jsonwebtoken');
 
 const Author = require('../models/author.js');
 const Book = require('../models/book.js');
+const User = require('../models/user.js');
+
+const JWT_SECRET = 'NEED_HERE_A_SECRET_KEY';
 
 module.exports = {
   Author: {
