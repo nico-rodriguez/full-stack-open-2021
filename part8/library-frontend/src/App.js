@@ -49,7 +49,7 @@ const App = () => {
 
       <NewBook show={page === 'add'} />
 
-      {!favoriteGenreQuery.loading && (
+      {token && !favoriteGenreQuery.loading && (
         <Recommended
           show={page === 'recommended'}
           favoriteGenre={favoriteGenreQuery.data.me.favoriteGenre}
