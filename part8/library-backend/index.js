@@ -1,7 +1,7 @@
 const { MongoMemoryServer } = require('mongodb-memory-server');
 const { default: mongoose } = require('mongoose');
 
-const server = require('./apollo/server.js');
+const startGraphQLServer = require('./apollo/server.js');
 
 const Author = require('./models/author.js');
 const Book = require('./models/book.js');
@@ -31,6 +31,4 @@ MongoMemoryServer.create({
   await User.create(users);
 });
 
-server.listen().then(({ url }) => {
-  console.log(`Server ready at ${url}`);
-});
+startGraphQLServer();

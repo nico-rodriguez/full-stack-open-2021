@@ -1,4 +1,5 @@
 const { UserInputError, AuthenticationError } = require('apollo-server');
+const { PubSub } = require('graphql-subscriptions');
 const jwt = require('jsonwebtoken');
 
 const Author = require('../models/author.js');
@@ -6,6 +7,8 @@ const Book = require('../models/book.js');
 const User = require('../models/user.js');
 
 const JWT_SECRET = 'NEED_HERE_A_SECRET_KEY';
+
+const pubSub = new PubSub();
 
 module.exports = {
   Author: {
@@ -84,6 +87,8 @@ module.exports = {
           genres,
         });
 
+        pubSub.publish('BOOK_ADDED', { bookAdded: book });
+
         return book.populate('author');
       } catch ({ message }) {
         throw new UserInputError(message, { invalidArgs: title });
@@ -136,6 +141,11 @@ module.exports = {
 
       const token = jwt.sign({ username, id: user._id }, JWT_SECRET);
       return { value: token };
+    },
+  },
+  Subscription: {
+    bookAdded: {
+      subscribe: () => pubSub.asyncIterator(['BOOK_ADDED']),
     },
   },
 };
