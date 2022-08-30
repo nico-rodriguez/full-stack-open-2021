@@ -5,9 +5,9 @@ import Books from './components/Books';
 import Login from './components/Login';
 import NewBook from './components/NewBook';
 import Recommended from './components/Recommended';
-import { ALL_AUTHORS } from './queries/authors';
-import { ALL_BOOKS, ALL_BOOKS_OF_GENRE } from './queries/books';
-import { BOOK_ADDED } from './subscriptions/books';
+import { ALL_AUTHORS } from './graphql/queries/authors';
+import { ALL_BOOKS, ALL_BOOKS_OF_GENRE } from './graphql/queries/books';
+import { BOOK_ADDED } from './graphql/subscriptions/books';
 
 const App = () => {
   const [page, setPage] = useState('authors');

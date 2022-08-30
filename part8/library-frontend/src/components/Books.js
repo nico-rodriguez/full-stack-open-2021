@@ -1,6 +1,6 @@
 import { useQuery } from '@apollo/client';
 import { useState } from 'react';
-import { ALL_BOOKS, ALL_BOOKS_OF_GENRE } from '../queries/books';
+import { ALL_BOOKS, ALL_BOOKS_OF_GENRE } from '../graphql/queries/books';
 import GenreFilter from './GenreFilter';
 
 const Books = (props) => {

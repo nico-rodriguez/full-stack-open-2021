@@ -1,6 +1,7 @@
 import { useMutation, useQuery } from '@apollo/client';
 import { useState } from 'react';
-import { ALL_AUTHORS, EDIT_AUTHOR } from '../queries/authors';
+import { EDIT_AUTHOR } from '../graphql/mutations/authors';
+import { ALL_AUTHORS } from '../graphql/queries/authors';
 
 const Authors = (props) => {
   const [name, setName] = useState('');
