@@ -6,7 +6,11 @@ import Login from './components/Login';
 import NewBook from './components/NewBook';
 import Recommended from './components/Recommended';
 import { ALL_AUTHORS } from './graphql/queries/authors';
-import { ALL_BOOKS, ALL_BOOKS_OF_GENRE } from './graphql/queries/books';
+import {
+  ALL_BOOKS,
+  ALL_BOOKS_OF_FAVORITE_GENRE,
+  ALL_BOOKS_OF_GENRE,
+} from './graphql/queries/books';
 import { BOOK_ADDED } from './graphql/subscriptions/books';
 
 const App = () => {
@@ -16,7 +20,7 @@ const App = () => {
   const client = useApolloClient();
 
   useSubscription(BOOK_ADDED, {
-    onSubscriptionData: ({ subscriptionData }) => {
+    onSubscriptionData: async ({ subscriptionData }) => {
       const { bookAdded } = subscriptionData.data;
 
       window.alert(`New book added: ${bookAdded.title}`);

@@ -3,7 +3,9 @@ import { ALL_BOOKS_OF_FAVORITE_GENRE } from '../graphql/queries/books';
 import { USER_FAVORITE_GENRE } from '../graphql/queries/users';
 
 const Recommended = ({ show }) => {
-  const booksQuery = useQuery(ALL_BOOKS_OF_FAVORITE_GENRE);
+  const booksQuery = useQuery(ALL_BOOKS_OF_FAVORITE_GENRE, {
+    pollInterval: 5000,
+  });
   const favoriteGenreQuery = useQuery(USER_FAVORITE_GENRE);
 
   if (!show || booksQuery.loading || favoriteGenreQuery.loading) {
