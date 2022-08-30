@@ -19,6 +19,7 @@
     "graphql": "^16.5.0",
     "graphql-subscriptions": "^2.0.0",
     "jsonwebtoken": "^8.5.1",
+    "lodash.merge": "^4.6.2",
     "mongodb-memory-server": "^8.9.0",
     "mongoose": "^6.5.3",
     "subscriptions-transport-ws": "^0.11.0",

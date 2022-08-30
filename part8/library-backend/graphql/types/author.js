@@ -7,4 +7,13 @@ module.exports = gql`
     born: Int
     bookCount: Int!
   }
+
+  type Query {
+    authorCount: Int!
+    allAuthors: [Author!]!
+  }
+
+  type Mutation {
+    editAuthor(name: String!, setBornTo: Int!): Author
+  }
 `;
