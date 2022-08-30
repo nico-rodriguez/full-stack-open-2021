@@ -1,7 +1,7 @@
 const { MongoMemoryServer } = require('mongodb-memory-server');
 const { default: mongoose } = require('mongoose');
 
-const startGraphQLServer = require('./apollo/server.js');
+const startGraphQLServer = require('./graphql/server.js');
 
 const Author = require('./models/author.js');
 const Book = require('./models/book.js');
@@ -18,7 +18,16 @@ MongoMemoryServer.create({
 }).then(async (mongod) => {
   const uri = mongod.getUri();
 
-  mongoose.connect(uri);
+  mongoose
+    .connect(uri)
+    .then(() => {
+      console.log('Connected to database');
+    })
+    .catch((error) => {
+      console.error(`Error connecting to database: ${error.message}`);
+    });
+
+  mongoose.set('debug', true);
 
   // Initialize database with default data
   await Author.create(authors);
