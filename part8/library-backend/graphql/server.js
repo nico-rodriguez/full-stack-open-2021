@@ -10,7 +10,7 @@ const jwt = require('jsonwebtoken');
 
 const User = require('../models/user.js');
 
-const typeDefs = require('./types.js');
+const typeDefs = require('./types/types.js');
 const resolvers = require('./resolvers.js');
 
 const JWT_SECRET = 'NEED_HERE_A_SECRET_KEY';
