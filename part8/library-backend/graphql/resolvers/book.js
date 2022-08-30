@@ -70,12 +70,14 @@ module.exports = {
 
       if (!authorDoc) {
         try {
-          const newAuthorDoc = await Author.create({ name });
+          const newAuthorDoc = await Author.create({ name, bookCount: 1 });
           authorId = newAuthorDoc._id;
         } catch ({ message }) {
           throw new UserInputError(message, { invalidArgs: name });
         }
       } else {
+        authorDoc.bookCount += 1;
+        await authorDoc.save();
         authorId = authorDoc._id;
       }
 

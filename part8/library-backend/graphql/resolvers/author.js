@@ -4,9 +4,6 @@ const Author = require('../../models/author.js');
 const Book = require('../../models/book.js');
 
 module.exports = {
-  Author: {
-    bookCount: async (root) => Book.countDocuments({ author: root.id }),
-  },
   Query: {
     authorCount: async () => Author.countDocuments({}),
     allAuthors: async () => Author.find({}),

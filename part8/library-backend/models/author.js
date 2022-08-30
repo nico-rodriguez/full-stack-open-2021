@@ -7,6 +7,10 @@ const authorSchema = new mongoose.Schema({
     unique: true,
     minlength: 4,
   },
+  bookCount: {
+    type: Number,
+    default: 0,
+  },
   born: {
     type: Number,
   },
