@@ -35,6 +35,16 @@ module.exports = {
 
       return await Book.find(filter).populate('author');
     },
+    allBooksOfFavoriteGenre: async (root, args, context) => {
+      const { currentUser } = context;
+      if (!currentUser) {
+        throw new AuthenticationError('Not authenticated');
+      }
+
+      const genre = currentUser.favoriteGenre;
+
+      return await Book.find({ genres: { $in: [genre] } }).populate('author');
+    },
     allAuthors: async () => Author.find({}),
     me: (root, args, context) => context.currentUser,
   },
@@ -86,6 +96,7 @@ module.exports = {
           author: authorId,
           genres,
         });
+        await book.populate('author');
 
         pubSub.publish('BOOK_ADDED', { bookAdded: book });
 

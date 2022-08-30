@@ -1,16 +1,18 @@
 import { useQuery } from '@apollo/client';
-import { ALL_BOOKS_OF_GENRE } from '../queries/books';
+import { ALL_BOOKS_OF_FAVORITE_GENRE } from '../queries/books';
+import { USER_FAVORITE_GENRE } from '../queries/users';
 
-const Recommended = ({ show, favoriteGenre }) => {
-  const booksQuery = useQuery(ALL_BOOKS_OF_GENRE, {
-    variables: { genre: favoriteGenre },
-  });
+const Recommended = ({ show }) => {
+  const booksQuery = useQuery(ALL_BOOKS_OF_FAVORITE_GENRE);
+  const favoriteGenreQuery = useQuery(USER_FAVORITE_GENRE);
 
-  if (!show || booksQuery.loading) {
+  if (!show || booksQuery.loading || favoriteGenreQuery.loading) {
     return null;
   }
 
-  const books = booksQuery.data.allBooks;
+  console.log(booksQuery.data);
+  const books = booksQuery.data.allBooksOfFavoriteGenre;
+  const favoriteGenre = favoriteGenreQuery.data.me.favoriteGenre;
 
   return (
     <div>

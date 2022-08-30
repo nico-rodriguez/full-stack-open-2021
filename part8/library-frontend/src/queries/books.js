@@ -25,7 +25,34 @@ export const ALL_BOOKS_OF_GENRE = gql`
   }
 `;
 
+export const ALL_BOOKS_OF_FAVORITE_GENRE = gql`
+  query AllBooksOfFavoriteGenre {
+    allBooksOfFavoriteGenre {
+      title
+      published
+      author {
+        name
+      }
+    }
+  }
+`;
+
+export const BOOK_DETAILS = gql`
+  fragment BookDetails on Book {
+    title
+    published
+    author {
+      name
+      born
+      bookCount
+    }
+    genres
+  }
+`;
+
 export const ADD_BOOK = gql`
+  ${BOOK_DETAILS}
+
   mutation AddBook(
     $title: String!
     $published: Int!
@@ -38,14 +65,7 @@ export const ADD_BOOK = gql`
       author: $author
       genres: $genres
     ) {
-      title
-      published
-      author {
-        name
-        born
-        bookCount
-      }
-      genres
+      ...BookDetails
     }
   }
 `;

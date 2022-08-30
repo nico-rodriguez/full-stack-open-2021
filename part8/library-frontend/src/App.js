@@ -1,17 +1,89 @@
-import { useQuery } from '@apollo/client';
+import { useApolloClient, useSubscription } from '@apollo/client';
 import { useEffect, useState } from 'react';
 import Authors from './components/Authors';
 import Books from './components/Books';
 import Login from './components/Login';
 import NewBook from './components/NewBook';
 import Recommended from './components/Recommended';
-import { USER_FAVORITE_GENRE } from './queries/users';
+import { ALL_AUTHORS } from './queries/authors';
+import { ALL_BOOKS, ALL_BOOKS_OF_GENRE } from './queries/books';
+import { BOOK_ADDED } from './subscriptions/books';
 
 const App = () => {
   const [page, setPage] = useState('authors');
   const [token, setToken] = useState(null);
 
-  const favoriteGenreQuery = useQuery(USER_FAVORITE_GENRE);
+  const client = useApolloClient();
+
+  useSubscription(BOOK_ADDED, {
+    onSubscriptionData: ({ subscriptionData }) => {
+      const { bookAdded } = subscriptionData.data;
+
+      window.alert(`New book added: ${bookAdded.title}`);
+
+      // Update cache of all books
+      client.cache.updateQuery({ query: ALL_BOOKS }, (data) => {
+        if (data) {
+          const { allBooks } = data;
+          return {
+            allBooks: allBooks
+              // remove book from cache if already there
+              .filter((book) => book.title !== bookAdded.title)
+              // add book to cache
+              .concat(bookAdded),
+          };
+        }
+
+        return null;
+      });
+
+      // Update cache of books for each genre
+      const bookAddedGenres = bookAdded.genres;
+      bookAddedGenres.forEach((genre) => {
+        client.cache.updateQuery(
+          { query: ALL_BOOKS_OF_GENRE, variables: { genre } },
+          (data) => {
+            if (data) {
+              const { allBooks } = data;
+
+              return {
+                allBooks: allBooks.concat(bookAdded),
+              };
+            }
+
+            return null;
+          }
+        );
+      });
+
+      const addedBookAuthor = bookAdded.author;
+      // Update cache of authors
+      client.cache.updateQuery({ query: ALL_AUTHORS }, (data) => {
+        if (data) {
+          const { allAuthors } = data;
+
+          const isAuthorInCache = allAuthors
+            .map(({ name }) => name)
+            .includes(addedBookAuthor.name);
+
+          if (isAuthorInCache) {
+            const allAuthorsUpdated = allAuthors.map(
+              ({ name, born, bookCount }) =>
+                name === addedBookAuthor.name
+                  ? { name, born, bookCount: bookCount + 1 }
+                  : { name, born, bookCount }
+            );
+
+            return { allAuthors: allAuthorsUpdated };
+          } else {
+            return { allAuthors: allAuthors.concat(addedBookAuthor) };
+          }
+        }
+
+        return null;
+      });
+    },
+  });
 
   const handleLogin = () => {
     setPage('authors');
@@ -49,12 +121,7 @@ const App = () => {
 
       <NewBook show={page === 'add'} />
 
-      {token && !favoriteGenreQuery.loading && (
-        <Recommended
-          show={page === 'recommended'}
-          favoriteGenre={favoriteGenreQuery.data.me.favoriteGenre}
-        />
-      )}
+      {token && <Recommended show={page === 'recommended'} />}
 
       <Login
         show={page === 'login'}

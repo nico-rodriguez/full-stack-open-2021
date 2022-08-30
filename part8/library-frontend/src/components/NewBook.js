@@ -11,23 +11,46 @@ const NewBook = (props) => {
   const [genres, setGenres] = useState([]);
 
   const [addBook] = useMutation(ADD_BOOK, {
-    refetchQueries: [{ query: ALL_BOOKS }, { query: ALL_AUTHORS }],
     onError: (error) => {
       console.error(error.message);
     },
     update: (cache, response) => {
+      const addedBook = response.data.addBook;
+
+      // Update cache of all books
       cache.updateQuery({ query: ALL_BOOKS }, ({ allBooks }) => ({
-        allBooks: allBooks.concat(response.data.addBook),
+        allBooks: allBooks.concat(addedBook),
       }));
 
-      const newBookGenres = response.data.addBook.genres;
-      newBookGenres.forEach((genre) => {
+      // Update cache of books for each genre
+      const addedBookGenres = addedBook.genres;
+      addedBookGenres.forEach((genre) => {
         cache.updateQuery(
           { query: ALL_BOOKS_OF_GENRE, variables: { genre } },
-          ({ allBooks }) => ({
-            allBooks: allBooks.concat(response.data.addBook),
-          })
+          (data) => {
+            if (data) {
+              const { allBooks } = data;
+
+              return {
+                allBooks: allBooks.concat(addedBook),
+              };
+            }
+
+            return null;
+          }
         );
+      });
+
+      const addedBookAuthor = addedBook.author;
+      // Update cache of authors
+      cache.updateQuery({ query: ALL_AUTHORS }, (data) => {
+        if (data) {
+          const { allAuthors } = data;
+
+          return { allAuthors: allAuthors.concat(addedBookAuthor) };
+        }
+
+        return null;
       });
     },
   });
@@ -39,7 +62,6 @@ const NewBook = (props) => {
   const submit = async (event) => {
     event.preventDefault();
 
-    console.log('add book...');
     addBook({ variables: { title, author, published, genres } });
 
     setTitle('');
