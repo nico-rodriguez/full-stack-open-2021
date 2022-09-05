@@ -1,3 +1,27 @@
+interface V {
+  target: number;
+  dailyExerciseHours: Array<number>;
+}
+
+const parseArgs = (args: Array<string>): V => {
+  if (args.length < 4) throw new Error('Not enough arguments');
+  if (args.length > 40) throw new Error('Too many arguments');
+
+  const [_1, _2, value1, ...values] = args;
+  const target = Number(value1);
+  const dailyExerciseHours = values.map(Number);
+  const areNumbersArguments =
+    !isNaN(target) && dailyExerciseHours.every((hours) => !isNaN(hours));
+  if (areNumbersArguments) {
+    return {
+      target,
+      dailyExerciseHours,
+    };
+  } else {
+    throw new Error('Provided values are not numbers');
+  }
+};
+
 type RatingDescription =
   | 'come on, you can do better'
   | 'not too bad but could be better'
@@ -62,4 +86,25 @@ const exerciseCalculator = (
   };
 };
 
-console.log(exerciseCalculator([3, 0, 2, 4.5, 0, 3, 1], 2));
+const calculator = (
+  target: number,
+  dailyExerciseHours: Array<number>
+): void => {
+  const trainingSummary = exerciseCalculator(dailyExerciseHours, target);
+  console.log(trainingSummary);
+};
+
+const main2 = (): void => {
+  try {
+    const { dailyExerciseHours, target } = parseArgs(process.argv);
+    calculator(target, dailyExerciseHours);
+  } catch (error: unknown) {
+    let errorMessage = 'Something bad happened';
+    if (error instanceof Error) {
+      errorMessage += '\nError: ' + error.message;
+    }
+    console.error(errorMessage);
+  }
+};
+
+main2();
