@@ -7,7 +7,7 @@ const parseArguments = (args: Array<string>): Values => {
   if (args.length < 4) throw new Error('Not enough arguments');
   if (args.length > 4) throw new Error('Too many arguments');
 
-  const [_1, _2, value1, value2] = args;
+  const [, , value1, value2] = args;
   const height = Number(value1);
   const weight = Number(value2);
   const areNumbersArguments = !isNaN(height) && !isNaN(weight);

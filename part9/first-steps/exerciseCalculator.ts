@@ -7,7 +7,7 @@ const parseArgs = (args: Array<string>): V => {
   if (args.length < 4) throw new Error('Not enough arguments');
   if (args.length > 40) throw new Error('Too many arguments');
 
-  const [_1, _2, value1, ...values] = args;
+  const [, , value1, ...values] = args;
   const target = Number(value1);
   const dailyExerciseHours = values.map(Number);
   const areNumbersArguments =
