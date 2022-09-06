@@ -66,7 +66,7 @@ const isSuccessful = (rating: Rating): boolean => {
   return rating.rating >= 3;
 };
 
-const exerciseCalculator = (
+export const exerciseCalculator = (
   dailyExerciseHours: Array<number>,
   targetAmountHours: number
 ): TrainingSummary => {
