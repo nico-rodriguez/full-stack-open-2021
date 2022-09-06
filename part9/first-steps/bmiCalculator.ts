@@ -31,7 +31,7 @@ type BMIRange =
   | 'Obese (Class II)'
   | 'Obese (Class III)';
 
-const calculateBmi = (height: number, weight: number): BMIRange => {
+export const calculateBmi = (height: number, weight: number): BMIRange => {
   const heightInMeters = height / 100;
   const bmi = weight / heightInMeters ** 2;
 
