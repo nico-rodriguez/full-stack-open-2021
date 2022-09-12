@@ -1,4 +1,4 @@
-import { Gender, NewPatientEntry } from '../types';
+import { Entry, Gender, NewPatientEntry } from '../types';
 import common from './common';
 
 type PatientFields = {
@@ -7,6 +7,7 @@ type PatientFields = {
   ssn: unknown;
   gender: unknown;
   occupation: unknown;
+  entries: unknown;
 };
 
 const parseName = (name: unknown): string => {
@@ -55,6 +56,7 @@ export const toNewPatientEntry = ({
   ssn,
   gender,
   occupation,
+  entries,
 }: PatientFields): NewPatientEntry => {
   const newPatient: NewPatientEntry = {
     name: parseName(name),
@@ -62,7 +64,7 @@ export const toNewPatientEntry = ({
     ssn: parseSSN(ssn),
     gender: parseGender(gender),
     occupation: parseOccupation(occupation),
-    entries: [],
+    entries: entries as Entry[],
   };
 
   return newPatient;
