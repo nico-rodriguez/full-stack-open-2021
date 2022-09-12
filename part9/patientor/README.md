@@ -12,3 +12,4 @@ Example of Full-Stack application in TypeScript
 - Validating `req.body`
 - Type guards and type predicates
 - `enum` types
+- React state with `useContext` and `useReducer`

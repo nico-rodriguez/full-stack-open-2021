@@ -10,6 +10,18 @@ router.get('/', (_req, res) => {
   res.json(patients);
 });
 
+router.get('/:patientId', (req, res) => {
+  const { patientId } = req.params;
+
+  const patient = patientsService.getEntryById(patientId);
+
+  if (patient) {
+    res.json(patient);
+  } else {
+    res.sendStatus(404);
+  }
+});
+
 router.post('/', function (req, res) {
   try {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-argument

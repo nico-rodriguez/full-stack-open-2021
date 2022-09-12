@@ -4,6 +4,9 @@ import { NewPatientEntry, NonSensitivePatientData, Patient } from '../types';
 
 const getEntries = (): Patient[] => patientsData;
 
+const getEntryById = (id: string): Patient | undefined =>
+  patientsData.find((patient) => patient.id === id);
+
 const getNonSensitiveEntries = (): NonSensitivePatientData[] =>
   patientsData.map(({ id, name, dateOfBirth, gender, occupation }) => ({
     id,
@@ -23,6 +26,7 @@ const addEntry = (patientEntry: NewPatientEntry) => {
 
 const patientsService = {
   getEntries,
+  getEntryById,
   getNonSensitiveEntries,
   addEntry,
 };
