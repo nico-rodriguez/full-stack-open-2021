@@ -16,16 +16,23 @@ interface EntryBase {
   specialist: string;
   type: string;
   description: string;
+  diagnosisCodes?: Array<Diagnose['code']>;
+}
+
+enum HealthCheckRating {
+  'Healthy' = 0,
+  'LowRisk' = 1,
+  'HighRisk' = 2,
+  'CriticalRisk' = 3,
 }
 
 interface HealthCheckEntry extends EntryBase {
   type: 'HealthCheck';
-  healthCheckRating: 0 | 1;
+  healthCheckRating: HealthCheckRating;
 }
 
 interface HospitalEntry extends EntryBase {
   type: 'Hospital';
-  diagnosisCodes: string[];
   discharge: {
     date: string;
     criteria: string;
@@ -35,7 +42,6 @@ interface HospitalEntry extends EntryBase {
 interface OccupationalHealthcareEntry extends EntryBase {
   type: 'OccupationalHealthcare';
   employerName: string;
-  diagnosisCodes: string[];
   sickLeave: {
     startDate: string;
     endDate: string;

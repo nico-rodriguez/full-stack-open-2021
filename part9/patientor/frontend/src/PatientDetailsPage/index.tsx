@@ -41,11 +41,22 @@ const PatientDetailsPage = () => {
 
   return (
     <Box>
-      <Typography variant='h6'>
+      <Typography variant='h5'>
         {patient.name} ({patient.gender})
       </Typography>
       <Typography>ssn: {patient.ssn}</Typography>
       <Typography>occupation: {patient.occupation}</Typography>
+      <Typography variant='h6'>entries</Typography>
+      {patient.entries.map((entry) => (
+        <>
+          {entry.date} <em>{entry.description}</em>
+          <ul>
+            {entry.diagnosisCodes?.map((code) => (
+              <li key={code}>{code}</li>
+            ))}
+          </ul>
+        </>
+      ))}
     </Box>
   );
 };
