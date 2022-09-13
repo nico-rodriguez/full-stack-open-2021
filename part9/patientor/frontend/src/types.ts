@@ -19,19 +19,19 @@ interface EntryBase {
   diagnosisCodes?: Array<Diagnosis['code']>;
 }
 
-enum HealthCheckRating {
+export enum HealthCheckRating {
   'Healthy' = 0,
   'LowRisk' = 1,
   'HighRisk' = 2,
   'CriticalRisk' = 3,
 }
 
-interface HealthCheckEntry extends EntryBase {
+export interface HealthCheckEntry extends EntryBase {
   type: 'HealthCheck';
   healthCheckRating: HealthCheckRating;
 }
 
-interface HospitalEntry extends EntryBase {
+export interface HospitalEntry extends EntryBase {
   type: 'Hospital';
   discharge: {
     date: string;
@@ -39,7 +39,7 @@ interface HospitalEntry extends EntryBase {
   };
 }
 
-interface OccupationalHealthcareEntry extends EntryBase {
+export interface OccupationalHealthcareEntry extends EntryBase {
   type: 'OccupationalHealthcare';
   employerName: string;
   sickLeave: {

@@ -1,10 +1,14 @@
 import { Box, Typography } from '@material-ui/core';
+import MaleIcon from '@mui/icons-material/Male';
+import FemaleIcon from '@mui/icons-material/Female';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { apiBaseUrl } from '../constants';
 import { useStateValue } from '../state';
 import { Patient } from '../types';
+import EntryDetails from './EntryDetails';
+import { Stack } from '@mui/material';
 
 const PatientDetailsPage = () => {
   const [{ diagnoses }] = useStateValue();
@@ -45,23 +49,17 @@ const PatientDetailsPage = () => {
   return (
     <Box>
       <Typography variant='h5'>
-        {patient.name} ({patient.gender})
+        {patient.name}
+        {patient.gender === 'male' ? <MaleIcon /> : <FemaleIcon />}
       </Typography>
       <Typography>ssn: {patient.ssn}</Typography>
       <Typography>occupation: {patient.occupation}</Typography>
       <Typography variant='h6'>entries</Typography>
-      {patient.entries.map((entry) => (
-        <div key={entry.id}>
-          {entry.date} <em>{entry.description}</em>
-          <ul>
-            {entry.diagnosisCodes?.map((code) => (
-              <li key={code}>
-                {code} {diagnoses[code]?.name}
-              </li>
-            ))}
-          </ul>
-        </div>
-      ))}
+      <Stack spacing={2}>
+        {patient.entries.map((entry) => (
+          <EntryDetails key={entry.id} entry={entry} diagnoses={diagnoses} />
+        ))}
+      </Stack>
     </Box>
   );
 };
