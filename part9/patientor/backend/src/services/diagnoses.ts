@@ -4,13 +4,13 @@ import { Diagnose } from '../types';
 
 const getEntries = (): Array<Diagnose> => diagnosesData;
 
-const addEntry = () => {
+const addDiagnosisEntry = () => {
   return null;
 };
 
 const diagnosesService = {
   getEntries,
-  addEntry,
+  addDiagnosisEntry,
 };
 
 export default diagnosesService;
