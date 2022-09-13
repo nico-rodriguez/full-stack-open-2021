@@ -3,9 +3,12 @@ import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { apiBaseUrl } from '../constants';
+import { useStateValue } from '../state';
 import { Patient } from '../types';
 
 const PatientDetailsPage = () => {
+  const [{ diagnoses }] = useStateValue();
+
   const { patientId } = useParams<{ patientId: string }>();
 
   const [loading, setLoading] = useState(true);
@@ -48,14 +51,16 @@ const PatientDetailsPage = () => {
       <Typography>occupation: {patient.occupation}</Typography>
       <Typography variant='h6'>entries</Typography>
       {patient.entries.map((entry) => (
-        <>
+        <div key={entry.id}>
           {entry.date} <em>{entry.description}</em>
           <ul>
             {entry.diagnosisCodes?.map((code) => (
-              <li key={code}>{code}</li>
+              <li key={code}>
+                {code} {diagnoses[code]?.name}
+              </li>
             ))}
           </ul>
-        </>
+        </div>
       ))}
     </Box>
   );
