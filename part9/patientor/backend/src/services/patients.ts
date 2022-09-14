@@ -14,13 +14,16 @@ const getEntryById = (id: string): Patient | undefined =>
   patientsData.find((patient) => patient.id === id);
 
 const getNonSensitiveEntries = (): NonSensitivePatientData[] =>
-  patientsData.map(({ id, name, dateOfBirth, gender, occupation }) => ({
-    id,
-    name,
-    dateOfBirth,
-    gender,
-    occupation,
-  }));
+  patientsData.map(
+    ({ id, name, dateOfBirth, gender, occupation, entries }) => ({
+      id,
+      name,
+      dateOfBirth,
+      gender,
+      occupation,
+      entries,
+    })
+  );
 
 const addPatientEntry = (patientEntry: NewPatientEntry): Patient => {
   const id = uuidv4();
