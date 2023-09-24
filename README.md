@@ -10,8 +10,6 @@
 
 Solutions to exercises for the Full stack course held at the Department of Computer Science at the University of Helsinki in Spring 2020, available at [https://fullstackopen.com/](https://fullstackopen.com/).
 
-The deployed phonebook aplication is at [https://damp-chamber-99299.herokuapp.com/](https://damp-chamber-99299.herokuapp.com/).
-
 The folder structure.
 
 ``` text
