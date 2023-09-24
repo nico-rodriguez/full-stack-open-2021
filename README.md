@@ -23,6 +23,25 @@ The folder structure.
 │   ├── countries
 └── part3
 │   ├── phonebook-backend
+└── part4
+│   ├── blog-list
+└── part5
+│   ├── bloglist-frontend
+└── part6
+│   ├── redux-anecdotes
+│   ├── unicafe-redux
+└── part7
+│   ├── bloglist-frontend
+│   ├── country-hook
+│   ├── routed-anecdotes
+│   ├── ultimate-hooks
+└── part8
+│   ├── library-backend
+│   ├── library-frontend
+└── part9
+│   ├── course-information
+│   ├── first-steps
+│   ├── patientor
 ```
 
 ## 🎉 Acknowledgements
