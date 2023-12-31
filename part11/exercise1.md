@@ -1,0 +1,5 @@
+Let's use as an example a REST API implemented with Ruby on Rails.
+For linting, we may use rubocop. It's a static code analyzer and formatter, based on the community Ruby style guide. It can also be integrated into many popular IDEs like Visual Studio Code.
+For testing, we can use the testing tools already available in the RoR framework. Rails offers testing tools that follow the best practices.
+An alternative CI besides Jenkins and GitHub Actions for this case may be CircleCI. It has security certifications and can be integrated into Rails applications. It can also be used either on self-hosted or cloud-based environments.
+As for the hosting choice, it depends on several aspects like the time available to set it up, the amount of security needed for the application, and the remaining budget. A self-hosted environment can be tailored to all the application's specific needs, including its security. But it takes more time to set up correctly and may be more expensive. A cloud-based environment offers security out of the box, can be configured in a short amount of time, and is usually inexpensive. However, it offers less flexibility in terms of customization.
